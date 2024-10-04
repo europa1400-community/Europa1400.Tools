@@ -1,0 +1,12 @@
+{
+  "repository_url": "https://github.com/europa1400-community/europa1400.tools.git",
+  "branches": [
+    "master"
+  ],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    "@semantic-release/github"
+  ],
+  "tagFormat": "${version}"
+}
