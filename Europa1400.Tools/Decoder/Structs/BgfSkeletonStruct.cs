@@ -1,4 +1,5 @@
 using System.Runtime.Intrinsics;
+using Europa1400.Tools.Extensions;
 
 namespace Europa1400.Tools.Decoder.Structs;
 

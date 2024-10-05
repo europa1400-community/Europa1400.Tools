@@ -1,3 +1,5 @@
+using Europa1400.Tools.Extensions;
+
 namespace Europa1400.Tools.Decoder.Structs;
 
 public class BgfHeaderStruct

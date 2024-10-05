@@ -3,7 +3,9 @@ namespace Europa1400.Tools.Decoder.Structs;
 public class AgebBuildingCoordinatesStruct
 {
     public byte X { get; init; }
+
     public byte Y { get; init; }
+
     public byte Z { get; init; }
 
     public static AgebBuildingCoordinatesStruct FromBytes(byte[] data)

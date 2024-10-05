@@ -1,23 +1,24 @@
-﻿namespace Europa1400.Tools.Tests;
+﻿using Europa1400.Tools.Converter;
+
+namespace Europa1400.Tools.Tests;
 
 public class Europa1400Test
 {
     [Fact]
-    public void TestFromPath()
+    public void TestSoundConverter()
     {
         var path = EnvVariables.GameDirectoryPath;
-        var europa1400 = Europa1400.FromPath(path);
 
-        Assert.Equal(path, europa1400.GameDirectory.FullName);
-    }
+        var soundConverter = new SoundConverter();
+        var tempTargetPath = Directory.CreateTempSubdirectory("Sound");
 
-    [Fact]
-    public void TestFromDirectory()
-    {
-        var path = EnvVariables.GameDirectoryPath;
-        var directoryInfo = new DirectoryInfo(path);
-        var europa1400 = Europa1400.FromDirectory(directoryInfo);
+        soundConverter.Convert(path, tempTargetPath.FullName);
 
-        Assert.Equal(path, europa1400.GameDirectory.FullName);
+        var tempTargetPathSound = new DirectoryInfo(Path.Combine(tempTargetPath.FullName, "Sound"));
+
+        Assert.True(tempTargetPathSound.Exists);
+        Assert.True(tempTargetPathSound.GetFiles("*.wav", SearchOption.AllDirectories).Length > 0);
+
+        tempTargetPath.Delete(true);
     }
 }

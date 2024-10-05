@@ -1,4 +1,4 @@
-namespace Europa1400.Tools.Decoder;
+namespace Europa1400.Tools.Extensions;
 
 using System.IO;
 using System.Text;
@@ -65,6 +65,13 @@ public static class BinaryReaderExtensions
         return sb.ToString();
     }
 
+    public static string ReadPaddedString(this BinaryReader reader, int length)
+    {
+        var str = reader.ReadString(length);
+
+        return str.Replace("\0", "");
+    }
+
     public static void SkipRequiredByte(this BinaryReader reader, byte value)
     {
         var peekedValue = reader.PeekByte();
@@ -113,7 +120,7 @@ public static class BinaryReaderExtensions
         {
             var value = reader.ReadByte();
 
-            if ((value >= 0x20 && value < 0x7F) || (value >= 0xA0))
+            if (value >= 0x20 && value < 0x7F || value >= 0xA0)
             {
                 reader.BaseStream.Seek(-1, SeekOrigin.Current);
                 break;
@@ -138,5 +145,11 @@ public static class BinaryReaderExtensions
         }
 
         return list;
+    }
+
+    public static byte[] ReadBytes(this BinaryReader br, uint length)
+    {
+        // TODO: properly implement this
+        return br.ReadBytes((int)length);
     }
 }
