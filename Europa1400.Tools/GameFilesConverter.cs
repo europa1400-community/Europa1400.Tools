@@ -7,7 +7,7 @@ public static class GameFilesConverter
 {
     private static readonly List<IConverter> Converters = [
         new SoundConverter(),
-        new SpriteConverter()
+        new GraphicsConverter()
     ];
 
     public static void Convert(string pathToGameFiles, string targetPath)

@@ -8,8 +8,8 @@ public class AobjObjectStruct
     public required string Name { get; init; }
     public byte Level { get; init; }
     public int Time { get; init; }
-    public required IEnumerable<short> UnknownData1 { get; init; }
-    public required IEnumerable<short> UnknownData2 { get; init; }
+    public required IEnumerable<ushort> UnknownData1 { get; init; }
+    public required IEnumerable<ushort> UnknownData2 { get; init; }
     public short Unknown1 { get; init; }
     public int Price { get; init; }
     public int Unknown2 { get; init; }
@@ -25,8 +25,8 @@ public class AobjObjectStruct
             var name = reader.ReadString(32);
             var level = reader.ReadByte();
             var time = reader.ReadInt32();
-            var unknownData1 = reader.ReadInt16s(4);
-            var unknownData2 = reader.ReadInt16s(4);
+            var unknownData1 = reader.ReadUInt16s(4);
+            var unknownData2 = reader.ReadUInt16s(4);
             var unknown1 = reader.ReadInt16();
             var price = reader.ReadInt32();
             var unknown2 = reader.ReadInt32();

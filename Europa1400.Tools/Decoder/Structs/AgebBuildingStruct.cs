@@ -7,8 +7,8 @@ public class AgebBuildingStruct
     public byte GroupId { get; init; }
     public required string Name { get; init; }
     public byte Unknown1 { get; init; }
-    public required IEnumerable<short> UnkownData1 { get; init; }
-    public required IEnumerable<short> UnknownData2 { get; init; }
+    public required IEnumerable<ushort> UnkownData1 { get; init; }
+    public required IEnumerable<ushort> UnknownData2 { get; init; }
     public required IEnumerable<byte> UnknownData3 { get; init; }
     public required IEnumerable<byte> UnknownData4 { get; init; }
     public required IEnumerable<byte> UnknownData5 { get; init; }
@@ -30,8 +30,8 @@ public class AgebBuildingStruct
             var name = reader.ReadString(32);
             var unknown1 = reader.ReadByte();
             var sizeData = reader.ReadByte();
-            var data1 = reader.ReadInt16s(136);
-            var data2 = reader.ReadInt16s(128);
+            var data1 = reader.ReadUInt16s(136);
+            var data2 = reader.ReadUInt16s(128);
             var data3 = reader.ReadBytes(65);
             var data4 = reader.ReadBytes(63);
             var data5 = reader.ReadBytes(26);

@@ -92,13 +92,37 @@ public static class BinaryReaderExtensions
         }
     }
 
-    public static IEnumerable<short> ReadInt16s(this BinaryReader reader, int count)
+    public static IEnumerable<ushort> ReadUInt16s(this BinaryReader reader, int count)
     {
-        var result = new short[count];
+        var result = new ushort[count];
 
         for (var i = 0; i < count; i++)
         {
-            result[i] = reader.ReadInt16();
+            result[i] = reader.ReadUInt16();
+        }
+
+        return result;
+    }
+
+    public static IEnumerable<uint> ReadUInt32s(this BinaryReader reader, int count)
+    {
+        var result = new uint[count];
+
+        for (var i = 0; i < count; i++)
+        {
+            result[i] = reader.ReadUInt32();
+        }
+
+        return result;
+    }
+
+    public static IEnumerable<uint> ReadPaddedUInt32Array(this BinaryReader reader, int readCount, int padCount)
+    {
+        var result = new uint[readCount > padCount ? readCount : padCount];
+
+        for (var i = 0; i < readCount; i++)
+        {
+            result[i] = reader.ReadUInt32();
         }
 
         return result;
