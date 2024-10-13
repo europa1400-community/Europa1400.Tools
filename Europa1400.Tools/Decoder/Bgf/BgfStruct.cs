@@ -1,16 +1,16 @@
 using Europa1400.Tools.Extensions;
 
-namespace Europa1400.Tools.Decoder.Structs;
+namespace Europa1400.Tools.Decoder.Bgf;
 
-public class BgfStruct
+internal class BgfStruct
 {
-    public required BgfHeaderStruct Header { get; init; }
-    public required IEnumerable<BgfTextureStruct> Textures { get; init; }
-    public required IEnumerable<BgfGameObjectStruct> GameObjects { get; init; }
-    public required BgfMappingObjectStruct MappingObject { get; init; }
-    public required BgfFooterStruct Footer { get; init; }
+    internal required BgfHeaderStruct Header { get; init; }
+    internal required IEnumerable<BgfTextureStruct> Textures { get; init; }
+    internal required IEnumerable<BgfGameObjectStruct> GameObjects { get; init; }
+    internal required BgfMappingObjectStruct MappingObject { get; init; }
+    internal required BgfFooterStruct Footer { get; init; }
 
-    public static BgfStruct FromBytes(BinaryReader br)
+    internal static BgfStruct FromBytes(BinaryReader br)
     {
         var header = BgfHeaderStruct.FromBytes(br);
         var textures = br.ReadUntilException(BgfTextureStruct.FromBytes, typeof(InvalidDataException), typeof(EndOfStreamException));

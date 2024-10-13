@@ -1,12 +1,12 @@
 using Europa1400.Tools.Extensions;
 
-namespace Europa1400.Tools.Decoder.Structs;
+namespace Europa1400.Tools.Decoder.Bgf;
 
-public class BgfTextureNameStruct
+internal class BgfTextureNameStruct
 {
-    public required string Name { get; init; }
+    internal required string Name { get; init; }
 
-    public static BgfTextureNameStruct FromBytes(BinaryReader br)
+    internal static BgfTextureNameStruct FromBytes(BinaryReader br)
     {
         var name = br.ReadCString();
         br.SkipNonLatin1();

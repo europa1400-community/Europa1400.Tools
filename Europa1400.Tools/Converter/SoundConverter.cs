@@ -41,20 +41,20 @@ internal class SoundConverter : IConverter
 
             for (int i = 0; i < sbfStruct.SoundbankCount; i++)
             {
-                var soundbank = sbfStruct.Soundbanks[i];
+                var soundbank = sbfStruct.Soundbanks.ElementAt(i);
 
                 for (int j = 0; j < soundbank.SoundCount; j++)
                 {
-                    var sound = soundbank.Sounds[j];
-                    var soundDefinition = soundbank.SoundDefinitions[j];
+                    var sound = soundbank.Sounds.ElementAt(j);
+                    var soundDefinition = soundbank.SoundDefinitions.ElementAt(j);
 
                     if (soundDefinition.SoundType == Enums.SoundType.WAV)
                     {
-                        audioBytes.Add(sound);
+                        audioBytes.Add(sound.ToArray());
                     }
                     else
                     {
-                        audioBytes.Add(ConvertToWav(sound));
+                        audioBytes.Add(ConvertToWav(sound.ToArray()));
                     }
                 }
 

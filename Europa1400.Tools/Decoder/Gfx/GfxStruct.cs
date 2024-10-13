@@ -1,15 +1,17 @@
-﻿namespace Europa1400.Tools.Decoder.Gfx;
+﻿using Europa1400.Tools.Extensions;
+
+namespace Europa1400.Tools.Decoder.Gfx;
 
 internal class GfxStruct
 {
-    public required uint ShapebankCount { get; init; }
+    internal required uint ShapebankCount { get; init; }
 
-    public required List<ShapebankDefinitionStruct> ShapebankDefinitions { get; init; }
+    internal required IEnumerable<ShapebankDefinitionStruct> ShapebankDefinitions { get; init; }
 
-    public static GfxStruct FromBytes(BinaryReader br)
+    internal static GfxStruct FromBytes(BinaryReader br)
     {
         var shapebankCount = br.ReadUInt32();
-        var shapebankDefinitions = Enumerable.Range(0, (int)shapebankCount).Select(_ => ShapebankDefinitionStruct.FromBytes(br)).ToList();
+        var shapebankDefinitions = br.ReadArray(ShapebankDefinitionStruct.FromBytes, shapebankCount);
 
         return new GfxStruct
         {

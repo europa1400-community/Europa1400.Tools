@@ -2,11 +2,11 @@
 
 internal class SoundbankHeaderStruct
 {
-    public required uint SoundCount { get; init; }
+    internal required uint SoundCount { get; init; }
 
-    public required uint Magic1 { get; init; }
+    internal required uint Unknown1 { get; init; }
 
-    public required uint Magic2 { get; init; }
+    internal required uint Unknown2 { get; init; }
 
     internal static SoundbankHeaderStruct FromBytes(BinaryReader br)
     {
@@ -17,8 +17,8 @@ internal class SoundbankHeaderStruct
         return new SoundbankHeaderStruct
         {
             SoundCount = soundCount,
-            Magic1 = magic1,
-            Magic2 = magic2
+            Unknown1 = magic1,
+            Unknown2 = magic2
         };
     }
 }

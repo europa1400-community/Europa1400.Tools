@@ -171,9 +171,79 @@ public static class BinaryReaderExtensions
         return list;
     }
 
-    public static byte[] ReadBytes(this BinaryReader br, uint length)
+    public static IEnumerable<T> ReadArray<T, TSize>(this BinaryReader br, Func<BinaryReader, int, T> readFunc, TSize size) where TSize : IConvertible
     {
-        // TODO: properly implement this
-        return br.ReadBytes((int)length);
+        var count = Convert.ToInt32(size);
+        for (var i = 0; i < count; i++)
+        {
+            yield return readFunc(br, i);
+        }
+    }
+
+    public static IEnumerable<T>? ReadArray<T, TSize>(this BinaryReader br, Func<BinaryReader, int, T> readFunc, TSize? size) where TSize : struct, IConvertible => ReadArray(br, readFunc, size) ?? null;
+
+    public static IEnumerable<T> ReadArray<T, TSize>(this BinaryReader br, Func<BinaryReader, T> readFunc, TSize size) where TSize : IConvertible
+    {
+        var count = Convert.ToInt32(size);
+        for (var i = 0; i < count; i++)
+        {
+            yield return readFunc(br);
+        }
+    }
+
+    public static IEnumerable<T>? ReadArray<T, TSize>(this BinaryReader br, Func<BinaryReader, T> readFunc, TSize? size) where TSize : struct, IConvertible => ReadArray(br, readFunc, size) ?? null;
+
+
+    public static IEnumerable<int> ReadInt32s<TSize>(this BinaryReader br, TSize size) where TSize : IConvertible
+    {
+        var count = Convert.ToInt32(size);
+        for (var i = 0; i < count; i++)
+        {
+            yield return br.ReadInt32();
+        }
+    }
+
+    public static IEnumerable<int>? ReadInt32s<TSize>(this BinaryReader br, TSize? size) where TSize : struct, IConvertible => ReadInt32s(br, size) ?? null;
+
+    public static IEnumerable<uint> ReadUInt32s<TSize>(this BinaryReader br, TSize size) where TSize : IConvertible
+    {
+        var count = Convert.ToInt32(size);
+        for (var i = 0; i < count; i++)
+        {
+            yield return br.ReadUInt32();
+        }
+    }
+
+    public static IEnumerable<uint>? ReadUInt32s<TSize>(this BinaryReader br, TSize? size) where TSize : struct, IConvertible => ReadUInt32s(br, size) ?? null;
+
+    public static IEnumerable<short> ReadInt16s<TSize>(this BinaryReader br, TSize size) where TSize : IConvertible
+    {
+        var count = Convert.ToInt32(size);
+        for (var i = 0; i < count; i++)
+        {
+            yield return br.ReadInt16();
+        }
+    }
+
+    public static IEnumerable<short>? ReadInt16s<TSize>(this BinaryReader br, TSize? size) where TSize : struct, IConvertible => ReadInt16s(br, size) ?? null;
+
+    public static IEnumerable<ushort> ReadUInt16s<TSize>(this BinaryReader br, TSize size) where TSize : IConvertible
+    {
+        var count = Convert.ToInt32(size);
+        for (var i = 0; i < count; i++)
+        {
+            yield return br.ReadUInt16();
+        }
+    }
+
+    public static IEnumerable<ushort>? ReadUInt16s<TSize>(this BinaryReader br, TSize? size) where TSize : struct, IConvertible => ReadUInt16s(br, size) ?? null;
+
+    public static IEnumerable<byte> ReadBytes<TSize>(this BinaryReader br, TSize size) where TSize : IConvertible
+    {
+        var count = Convert.ToInt32(size);
+        for (var i = 0; i < count; i++)
+        {
+            yield return br.ReadByte();
+        }
     }
 }

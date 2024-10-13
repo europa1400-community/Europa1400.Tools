@@ -4,26 +4,30 @@ namespace Europa1400.Tools.Decoder.Sbf
 {
     internal class SoundbankStruct
     {
-        public required SoundbankDefinitionStruct SoundbankDefinition { get; init; }
+        internal required SoundbankDefinitionStruct SoundbankDefinition { get; init; }
 
-        public SoundbankHeaderStruct? SoundbankHeader { get; init; }
+        internal SoundbankHeaderStruct? SoundbankHeader { get; init; }
 
-        public required uint SoundCount { get; init; }
+        internal required uint SoundCount { get; init; }
 
-        public required SoundDefinitionStruct[] SoundDefinitions { get; init; }
+        internal required IEnumerable<SoundDefinitionStruct> SoundDefinitions { get; init; }
 
-        public required byte[][] Sounds { get; init; }
+        internal required IEnumerable<IEnumerable<byte>> Sounds { get; init; }
 
         internal static SoundbankStruct FromBytes(BinaryReader br, SoundbankDefinitionStruct soundbankDefinition)
         {
-            SoundbankHeaderStruct? soundbankHeader = null;
-            
-            if(soundbankDefinition.SoundbankType == Enums.SoundbankType.Multi)
-                soundbankHeader = SoundbankHeaderStruct.FromBytes(br);
-
-            var soundCount = soundbankDefinition.SoundbankType == Enums.SoundbankType.Single ? 1 : soundbankHeader!.SoundCount;
-            var soundDefinitions = Enumerable.Range(0, (int)soundCount).Select(_ => SoundDefinitionStruct.FromBytes(br)).ToArray();
-            var sounds = Enumerable.Range(0, (int)soundCount).Select(idx => br.ReadBytes(soundDefinitions[idx].Length)).ToArray();
+            var soundbankHeader = soundbankDefinition.SoundbankType switch
+            {
+                Enums.SoundbankType.Multi => SoundbankHeaderStruct.FromBytes(br),
+                _ => null
+            };
+            var soundCount = soundbankDefinition.SoundbankType switch
+            {
+                Enums.SoundbankType.Single => (uint)1,
+                _ => soundbankHeader!.SoundCount
+            };
+            var soundDefinitions = br.ReadArray(SoundDefinitionStruct.FromBytes, soundCount);
+            var sounds = br.ReadArray((br, idx) => br.ReadBytes(soundDefinitions.ElementAt(idx).Length), soundCount);
 
             return new SoundbankStruct
             {

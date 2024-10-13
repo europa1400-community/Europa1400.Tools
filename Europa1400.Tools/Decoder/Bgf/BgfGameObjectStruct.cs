@@ -1,15 +1,15 @@
 using Europa1400.Tools.Extensions;
 
-namespace Europa1400.Tools.Decoder.Structs;
+namespace Europa1400.Tools.Decoder.Bgf;
 
-public class BgfGameObjectStruct
+internal class BgfGameObjectStruct
 {
-    public required string Name { get; init; }
-    public BgfModelStruct? Model { get; init; }
-    public int? SkeletonCount { get; init; }
-    public IEnumerable<BgfSkeletonStruct>? Skeletons { get; init; }
+    internal required string Name { get; init; }
+    internal required BgfModelStruct? Model { get; init; }
+    internal required uint? SkeletonCount { get; init; }
+    internal required IEnumerable<BgfSkeletonStruct>? Skeletons { get; init; }
 
-    public static BgfGameObjectStruct FromBytes(BinaryReader br)
+    internal static BgfGameObjectStruct FromBytes(BinaryReader br)
     {
         br.SkipOptionalByte(0x28);
         br.SkipRequiredBytes(0x14, 0x15);
@@ -23,8 +23,8 @@ public class BgfGameObjectStruct
         br.SkipOptionalByte(0x28);
         br.SkipOptionalByte(0x28);
         var wasSkipped3 = br.SkipOptionalBytesAll(0x37);
-        var skeletonCount = wasSkipped3 ? br.ReadInt32() as int? : null;
-        var skeletons = wasSkipped3 ? Enumerable.Range(0, skeletonCount ?? 0).Select(_ => BgfSkeletonStruct.FromBytes(br)) : null;
+        var skeletonCount = wasSkipped3 ? br.ReadUInt32() as uint? : null;
+        var skeletons = br.ReadArray(BgfSkeletonStruct.FromBytes, skeletonCount);
 
         return new BgfGameObjectStruct
         {

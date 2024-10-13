@@ -1,19 +1,19 @@
 using Europa1400.Tools.Extensions;
 
-namespace Europa1400.Tools.Decoder.Structs;
+namespace Europa1400.Tools.Decoder.Bgf;
 
-public class BgfTextureStruct
+internal class BgfTextureStruct
 {
-    public int Id { get; init; }
-    public required string Name { get; init; }
-    public string? NameAppendix { get; init; }
-    public byte? Unknown1 { get; init; }
-    public byte? Unknown2 { get; init; }
+    internal required uint Id { get; init; }
+    internal required string Name { get; init; }
+    internal required string? NameAppendix { get; init; }
+    internal required byte? Unknown1 { get; init; }
+    internal required byte? Unknown2 { get; init; }
 
-    public static BgfTextureStruct FromBytes(BinaryReader br)
+    internal static BgfTextureStruct FromBytes(BinaryReader br)
     {
         br.SkipRequiredBytes(0x05, 0x06);
-        var id = br.ReadInt32();
+        var id = br.ReadUInt32();
         br.SkipOptionalByte(0x07);
         br.SkipOptionalByte(0x08);
         var name = br.ReadCString();
@@ -25,7 +25,6 @@ public class BgfTextureStruct
         var wasSkipped4 = br.SkipOptionalByte(0x0B);
         var unknown2 = wasSkipped4 ? br.ReadByte() as byte? : null;
         br.SkipUntilInclusive(0x28);
-
 
         return new BgfTextureStruct
         {

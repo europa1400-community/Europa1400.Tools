@@ -4,11 +4,11 @@ namespace Europa1400.Tools.Decoder.Sbf;
 
 internal class SoundDefinitionStruct
 {
-    public required SoundType SoundType { get; init; }
+    internal required SoundType SoundType { get; init; }
 
-    public required uint Length { get; init; }
+    internal required uint Length { get; init; }
 
-    public required uint Magic { get; init; }
+    internal required uint Magic { get; init; }
 
     internal static SoundDefinitionStruct FromBytes(BinaryReader br)
     {

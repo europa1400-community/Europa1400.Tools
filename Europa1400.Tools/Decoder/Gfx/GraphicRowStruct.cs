@@ -1,15 +1,17 @@
-﻿namespace Europa1400.Tools.Decoder.Gfx;
+﻿using Europa1400.Tools.Extensions;
+
+namespace Europa1400.Tools.Decoder.Gfx;
 
 internal class GraphicRowStruct
 {
-    public required uint BlockCount { get; init; }
+    internal required uint BlockCount { get; init; }
 
-    public required List<TransparencyBlockStruct> TransparencyBlocks { get; init; }
+    internal required IEnumerable<TransparencyBlockStruct> TransparencyBlocks { get; init; }
 
-    public static GraphicRowStruct FromBytes(BinaryReader br)
+    internal static GraphicRowStruct FromBytes(BinaryReader br)
     {
         var blockCount = br.ReadUInt32();
-        var transparency = Enumerable.Range(0, (int)blockCount).Select(_ => TransparencyBlockStruct.FromBytes(br)).ToList();
+        var transparency = br.ReadArray(TransparencyBlockStruct.FromBytes, blockCount);
 
         return new GraphicRowStruct
         {

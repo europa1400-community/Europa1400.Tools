@@ -1,12 +1,12 @@
-namespace Europa1400.Tools.Decoder.Structs;
+namespace Europa1400.Tools.Decoder.Bgf;
 
-public class BgfPolygonMappingStruct
+internal class BgfPolygonMappingStruct
 {
-    public required BgfFaceStruct Face { get; init; }
-    public required BgfTextureMappingStruct TextureMapping { get; init; }
-    public byte TextureIndex { get; init; }
+    internal required BgfFaceStruct Face { get; init; }
+    internal required BgfTextureMappingStruct TextureMapping { get; init; }
+    internal required byte TextureIndex { get; init; }
 
-    public static BgfPolygonMappingStruct FromBytes(BinaryReader br)
+    internal static BgfPolygonMappingStruct FromBytes(BinaryReader br)
     {
         var face = BgfFaceStruct.FromBytes(br);
         var textureMapping = BgfTextureMappingStruct.FromBytes(br);

@@ -4,112 +4,105 @@ namespace Europa1400.Tools.Decoder.Gfx;
 
 internal class GraphicStruct
 {
-    public required uint Size { get; init; }
+    internal required uint Size { get; init; }
 
-    public required ushort Magic1 { get; init; }
+    internal required ushort Unknown1 { get; init; }
 
-    public required ushort Width { get; init; }
+    internal required ushort Width { get; init; }
 
-    public required ushort Magic2 { get; init; }
+    internal required ushort Unknown2 { get; init; }
 
-    public required ushort Height { get; init; }
+    internal required ushort Height { get; init; }
 
-    public required ushort Magic3 { get; init; }
+    internal required ushort Unknown3 { get; init; }
 
-    public required ushort Magic4 { get; init; }
+    internal required ushort Unknown4 { get; init; }
 
-    public required ushort Magic5 { get; init; }
+    internal required ushort Unknown5 { get; init; }
 
-    public required ushort Width2 { get; init; }
+    internal required ushort Width2 { get; init; }
 
-    public required ushort Height2 { get; init; }
+    internal required ushort Height2 { get; init; }
 
-    public required ushort Magic6 { get; init; }
+    internal required ushort Unknown6 { get; init; }
 
-    public required ushort Magic7 { get; init; }
+    internal required ushort Unknown7 { get; init; }
 
-    public required ushort Magic8 { get; init; }
+    internal required ushort Unknown8 { get; init; }
 
-    public required ushort Magic9 { get; init; }
+    internal required ushort Unknown9 { get; init; }
 
-    public required ushort Magic10 { get; init; }
+    internal required ushort Unknown10 { get; init; }
 
-    public required ushort Magic11 { get; init; }
+    internal required ushort Unknown11 { get; init; }
 
-    public required ushort Magic12 { get; init; }
+    internal required ushort Unknown12 { get; init; }
 
-    public required ushort Magic13 { get; init; }
+    internal required ushort Unknown13 { get; init; }
 
-    public required uint Magic14 { get; init; }
+    internal required uint Unknown14 { get; init; }
 
-    public required uint SizeWithoutFooter { get; init; }
+    internal required uint SizeWithoutFooter { get; init; }
 
-    public required uint Magic15 { get; init; }
+    internal required uint Unknown15 { get; init; }
 
-    public required byte[]? PixelData { get; init; }
+    internal required IEnumerable<byte>? PixelData { get; init; }
 
-    public required List<GraphicRowStruct>? GraphicRows { get; init; }
+    internal required IEnumerable<GraphicRowStruct>? GraphicRows { get; init; }
 
-    public required uint[]? FooterData { get; init; }
+    internal required IEnumerable<uint>? FooterData { get; init; }
 
-    public static GraphicStruct FromBytes(BinaryReader br)
+    internal static GraphicStruct FromBytes(BinaryReader br)
     {
         var size = br.ReadUInt32();
-        var magic1 = br.ReadUInt16();
+        var unknown1 = br.ReadUInt16();
         var width = br.ReadUInt16();
-        var magic2 = br.ReadUInt16();
+        var unknown2 = br.ReadUInt16();
         var height = br.ReadUInt16();
-        var magic3 = br.ReadUInt16();
-        var magic4 = br.ReadUInt16();
-        var magic5 = br.ReadUInt16();
+        var unknown3 = br.ReadUInt16();
+        var unknown4 = br.ReadUInt16();
+        var unknown5 = br.ReadUInt16();
         var width2 = br.ReadUInt16();
         var height2 = br.ReadUInt16();
-        var magic6 = br.ReadUInt16();
-        var magic7 = br.ReadUInt16();
-        var magic8 = br.ReadUInt16();
-        var magic9 = br.ReadUInt16();
-        var magic10 = br.ReadUInt16();
-        var magic11 = br.ReadUInt16();
-        var magic12 = br.ReadUInt16();
-        var magic13 = br.ReadUInt16();
-        var magic14 = br.ReadUInt32();
+        var unknown6 = br.ReadUInt16();
+        var unknown7 = br.ReadUInt16();
+        var unknown8 = br.ReadUInt16();
+        var unknown9 = br.ReadUInt16();
+        var unknown10 = br.ReadUInt16();
+        var unknown11 = br.ReadUInt16();
+        var unknown12 = br.ReadUInt16();
+        var unknown13 = br.ReadUInt16();
+        var unknown14 = br.ReadUInt32();
         var sizeWithoutFooter = br.ReadUInt32();
-        var magic15 = br.ReadUInt32();
+        var Unknown15 = br.ReadUInt32();
 
-        byte[]? pixelData = null;
-        List<GraphicRowStruct>? graphicsRows = null;
-        uint[]? footerData = null;
-
-        if (sizeWithoutFooter > 0)
-        {
-            pixelData = br.ReadBytes(width * height * 3);
-            graphicsRows = Enumerable.Range(0, height).Select(_ => GraphicRowStruct.FromBytes(br)).ToList();
-            footerData = br.ReadUInt32s((int)(size - sizeWithoutFooter) / 4).Select(b => b).ToArray();
-        }
+        var pixelData = sizeWithoutFooter > 0 ? br.ReadBytes(width * height * 3) : null;
+        var graphicsRows = sizeWithoutFooter > 0 ? br.ReadArray(GraphicRowStruct.FromBytes, height) : null;
+        var footerData = sizeWithoutFooter > 0 ? br.ReadUInt32s((size - sizeWithoutFooter) / 4) : null;
 
         return new GraphicStruct
         {
             Size = size,
-            Magic1 = magic1,
+            Unknown1 = unknown1,
             Width = width,
             Height = height,
-            Magic2 = magic2,
-            Magic3 = magic3,
-            Magic4 = magic4,
-            Magic5 = magic5,
+            Unknown2 = unknown2,
+            Unknown3 = unknown3,
+            Unknown4 = unknown4,
+            Unknown5 = unknown5,
             Width2 = width2,
             Height2 = height2,
-            Magic6 = magic6,
-            Magic7 = magic7,
-            Magic8 = magic8,
-            Magic9 = magic9,
-            Magic10 = magic10,
-            Magic11 = magic11,
-            Magic12 = magic12,
-            Magic13 = magic13,
-            Magic14 = magic14,
+            Unknown6 = unknown6,
+            Unknown7 = unknown7,
+            Unknown8 = unknown8,
+            Unknown9 = unknown9,
+            Unknown10 = unknown10,
+            Unknown11 = unknown11,
+            Unknown12 = unknown12,
+            Unknown13 = unknown13,
+            Unknown14 = unknown14,
             SizeWithoutFooter = sizeWithoutFooter,
-            Magic15 = magic15,
+            Unknown15 = Unknown15,
             PixelData = pixelData,
             GraphicRows = graphicsRows,
             FooterData = footerData

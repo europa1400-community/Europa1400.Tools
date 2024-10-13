@@ -4,45 +4,39 @@ namespace Europa1400.Tools.Decoder.Gfx;
 
 internal class ShapebankDefinitionStruct
 {
-    public required string Name { get; init; }
+    internal required string Name { get; init; }
 
-    public required uint Address { get; init; }
+    internal required uint Address { get; init; }
 
-    public required byte[] Zeroes1 { get; init; }
+    internal required uint Size { get; init; }
 
-    public required uint Size { get; init; }
+    internal required uint Unknown1 { get; init; }
 
-    public required uint Magic1 { get; init; }
+    internal required bool Unknown2 { get; init; }
 
-    public required byte[] Zeroes2 { get; init; }
+    internal required uint Unknown3 { get; init; }
 
-    public required bool MagicFlag { get; init; }
+    internal required ushort Width { get; init; }
 
-    public required byte[] Zeroes3 { get; init; }
+    internal required ushort Height { get; init; }
 
-    public required uint Magic2 { get; init; }
+    internal bool IsMainShapebank => Address != 0;
 
-    public required ushort Width { get; init; }
+    internal bool IsFont => Width == 0 && Height == 0;
 
-    public required ushort Height { get; init; }
-
-    public bool IsMainShapebank => Address != 0;
-
-    public bool IsFont => Width == 0 && Height == 0;
-
-    public required ShapebankStruct? Shapebank { get; init; }
+    internal required ShapebankStruct? Shapebank { get; init; }
 
 
-    public static ShapebankDefinitionStruct FromBytes(BinaryReader br)
+    internal static ShapebankDefinitionStruct FromBytes(BinaryReader br)
     {
         var name = br.ReadPaddedString(48);
         var address = br.ReadUInt32();
-        var zeroes1 = br.ReadBytes(4);
+        br.Skip(4);
         var size = br.ReadUInt32();
         var magic1 = br.ReadUInt32();
-        var zeroes2 = br.ReadBytes(4);
+        br.Skip(4);
         var magicFlag = br.ReadByte() == 1;
-        var zeroes3 = br.ReadBytes(7);
+        br.Skip(7);
         var magic2 = br.ReadUInt32();
         var width = br.ReadUInt16();
         var height = br.ReadUInt16();
@@ -63,13 +57,10 @@ internal class ShapebankDefinitionStruct
         {
             Name = name,
             Address = address,
-            Zeroes1 = zeroes1,
             Size = size,
-            Magic1 = magic1,
-            Zeroes2 = zeroes2,
-            MagicFlag = magicFlag,
-            Zeroes3 = zeroes3,
-            Magic2 = magic2,
+            Unknown1 = magic1,
+            Unknown2 = magicFlag,
+            Unknown3 = magic2,
             Width = width,
             Height = height,
             Shapebank = shapebank

@@ -1,12 +1,12 @@
 using Europa1400.Tools.Extensions;
 
-namespace Europa1400.Tools.Decoder.Structs;
+namespace Europa1400.Tools.Decoder.Bgf;
 
-public class BgfFooterStruct
+internal class BgfFooterStruct
 {
-    public required IEnumerable<BgfTextureNameStruct> TextureNames { get; init; }
+    internal required IEnumerable<BgfTextureNameStruct> TextureNames { get; init; }
 
-    public static BgfFooterStruct FromBytes(BinaryReader br)
+    internal static BgfFooterStruct FromBytes(BinaryReader br)
     {
         var textureNames = br.ReadUntilException(BgfTextureNameStruct.FromBytes, typeof(InvalidDataException), typeof(EndOfStreamException));
 

@@ -40,4 +40,30 @@ public class Europa1400Test
 
         tempTargetPath.Delete(true);
     }
+
+    [Fact]
+    public void TestAgebConverter()
+    {
+        var path = EnvVariables.GameDirectoryPath;
+        var agebConverter = new AgebConverter();
+        var tempTargetPath = Directory.CreateTempSubdirectory("Ageb");
+
+        agebConverter.Convert(path, tempTargetPath.FullName);
+
+        Assert.True(tempTargetPath.Exists);
+        Assert.True(tempTargetPath.GetFiles("*.json", SearchOption.AllDirectories).Length > 0);
+    }
+
+    [Fact]
+    public void TestAobjConverter()
+    {
+        var path = EnvVariables.GameDirectoryPath;
+        var aobjConverter = new AobjConverter();
+        var tempTargetPath = Directory.CreateTempSubdirectory("Aobj");
+
+        aobjConverter.Convert(path, tempTargetPath.FullName);
+
+        Assert.True(tempTargetPath.Exists);
+        Assert.True(tempTargetPath.GetFiles("*.json", SearchOption.AllDirectories).Length > 0);
+    }
 }
