@@ -6,12 +6,9 @@ namespace Europa1400.Tools.Decoder.Sbf;
 internal class SoundbankDefinitionStruct
 {
     internal required uint Address { get; init; }
-
     internal required string Name { get; init; }
-
     internal required SoundbankType SoundbankType { get; init; }
-
-    internal required IEnumerable<byte> Padding { get; init; }
+    internal required byte[] Padding { get; init; }
 
     internal static SoundbankDefinitionStruct FromBytes(BinaryReader br)
     {

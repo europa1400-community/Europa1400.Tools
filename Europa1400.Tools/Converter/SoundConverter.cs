@@ -8,7 +8,7 @@ namespace Europa1400.Tools.Converter;
 
 internal class SoundConverter : IConverter
 {
-    public byte[] ConvertToWav(byte[] mp3Bytes)
+    private static byte[] ConvertToWav(byte[] mp3Bytes)
     {
         using var inputStream = new MemoryStream(mp3Bytes);
         using var waveStream = new Mp3FileReader(inputStream);
@@ -39,23 +39,18 @@ internal class SoundConverter : IConverter
 
             var audioBytes = new List<byte[]>();
 
-            for (int i = 0; i < sbfStruct.SoundbankCount; i++)
+            for (var i = 0; i < sbfStruct.SoundbankCount; i++)
             {
-                var soundbank = sbfStruct.Soundbanks.ElementAt(i);
+                var soundbank = sbfStruct.Soundbanks[i];
 
-                for (int j = 0; j < soundbank.SoundCount; j++)
+                for (var j = 0; j < soundbank.SoundCount; j++)
                 {
-                    var sound = soundbank.Sounds.ElementAt(j);
-                    var soundDefinition = soundbank.SoundDefinitions.ElementAt(j);
+                    var sound = soundbank.Sounds[j];
+                    var soundDefinition = soundbank.SoundDefinitions[j];
 
-                    if (soundDefinition.SoundType == Enums.SoundType.WAV)
-                    {
-                        audioBytes.Add(sound.ToArray());
-                    }
-                    else
-                    {
-                        audioBytes.Add(ConvertToWav(sound.ToArray()));
-                    }
+                    audioBytes.Add(soundDefinition.SoundType == Enums.SoundType.WAV
+                        ? sound.ToArray()
+                        : ConvertToWav(sound.ToArray()));
                 }
 
                 soundGroups.Add($"{sbfStruct.Name}_{soundbank.SoundbankDefinition.Name}", audioBytes);
@@ -66,20 +61,18 @@ internal class SoundConverter : IConverter
 
         #region Write converted sounds to disk
 
-        foreach(var soundGroup in soundGroups)
+        foreach(var (key, value) in soundGroups)
         {
-            var soundbankName = soundGroup.Key.Split('_')[1];
+            var soundbankName = key.Split('_')[1];
             var dirPath = Path.Combine(outputPath, soundbankName);
             Directory.CreateDirectory(dirPath);
-            
-            var basename = soundGroup.Key;
-            
-            for (int i = 0; i < soundGroup.Value.Count; i++)
+
+            for (var i = 0; i < value.Count; i++)
             {
-                byte[] soundBytes = soundGroup.Value[i];
+                var soundBytes = value[i];
+                var filename = key;
                 
-                string filename = basename;
-                if (soundGroup.Value.Count > 1)
+                if (value.Count > 1)
                     filename += $"_{i}";
 
                 var filePath = Path.Combine(dirPath, $"{filename}.wav");

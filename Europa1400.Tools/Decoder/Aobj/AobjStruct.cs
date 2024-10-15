@@ -4,7 +4,7 @@ namespace Europa1400.Tools.Decoder.Aobj;
 
 internal class AobjStruct
 {
-    internal required IEnumerable<AobjObjectStruct> Objects { get; init; }
+    internal required AobjObjectStruct[] Objects { get; init; }
 
     internal static AobjStruct FromBytes(BinaryReader br)
     {

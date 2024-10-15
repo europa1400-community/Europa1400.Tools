@@ -3,9 +3,7 @@
 internal class SoundbankHeaderStruct
 {
     internal required uint SoundCount { get; init; }
-
     internal required uint Unknown1 { get; init; }
-
     internal required uint Unknown2 { get; init; }
 
     internal static SoundbankHeaderStruct FromBytes(BinaryReader br)

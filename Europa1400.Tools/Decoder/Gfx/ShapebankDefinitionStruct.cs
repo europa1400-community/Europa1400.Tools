@@ -5,25 +5,15 @@ namespace Europa1400.Tools.Decoder.Gfx;
 internal class ShapebankDefinitionStruct
 {
     internal required string Name { get; init; }
-
     internal required uint Address { get; init; }
-
     internal required uint Size { get; init; }
-
     internal required uint Unknown1 { get; init; }
-
     internal required bool Unknown2 { get; init; }
-
     internal required uint Unknown3 { get; init; }
-
     internal required ushort Width { get; init; }
-
     internal required ushort Height { get; init; }
-
     internal bool IsMainShapebank => Address != 0;
-
     internal bool IsFont => Width == 0 && Height == 0;
-
     internal required ShapebankStruct? Shapebank { get; init; }
 
 

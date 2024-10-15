@@ -57,9 +57,9 @@ internal class GraphicsConverter : IConverter
 
         var baseName = shapebank.Name;
 
-        for (var i = 0; i < shapebank.Shapebank.Graphics.Count(); i++)
+        for (var i = 0; i < shapebank.Shapebank.Graphics.Length; i++)
         {
-            var graphic = shapebank.Shapebank.Graphics.ElementAt(i);
+            var graphic = shapebank.Shapebank.Graphics[i];
             var convertedGraphic = ConvertGraphic(graphic);
 
             if(convertedGraphic != null)

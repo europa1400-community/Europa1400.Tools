@@ -6,8 +6,8 @@ internal class BgfModelStruct
 {
     internal required uint VertexCount { get; init; }
     internal required uint PolygonCount { get; init; }
-    internal required IEnumerable<Vector3Struct> Vertices { get; init; }
-    internal required IEnumerable<BgfPolygonStruct> Polygons { get; init; }
+    internal required Vector3Struct[] Vertices { get; init; }
+    internal required BgfPolygonStruct[] Polygons { get; init; }
 
     internal static BgfModelStruct FromBytes(BinaryReader br)
     {

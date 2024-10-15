@@ -5,8 +5,8 @@ namespace Europa1400.Tools.Decoder.Bgf;
 internal class BgfStruct
 {
     internal required BgfHeaderStruct Header { get; init; }
-    internal required IEnumerable<BgfTextureStruct> Textures { get; init; }
-    internal required IEnumerable<BgfGameObjectStruct> GameObjects { get; init; }
+    internal required BgfTextureStruct[] Textures { get; init; }
+    internal required BgfGameObjectStruct[] GameObjects { get; init; }
     internal required BgfMappingObjectStruct MappingObject { get; init; }
     internal required BgfFooterStruct Footer { get; init; }
 

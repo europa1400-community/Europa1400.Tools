@@ -7,11 +7,11 @@ internal class AgebBuildingStruct
     internal required byte GroupId { get; init; }
     internal required string Name { get; init; }
     internal required byte Unknown1 { get; init; }
-    internal required IEnumerable<ushort> UnkownData1 { get; init; }
-    internal required IEnumerable<uint> UnknownData2 { get; init; }
-    internal required IEnumerable<byte> UnknownData3 { get; init; }
-    internal required IEnumerable<byte> UnknownData4 { get; init; }
-    internal required IEnumerable<byte> UnknownData5 { get; init; }
+    internal required ushort[] UnknownData1 { get; init; }
+    internal required uint[] UnknownData2 { get; init; }
+    internal required byte[] UnknownData3 { get; init; }
+    internal required byte[] UnknownData4 { get; init; }
+    internal required byte[] UnknownData5 { get; init; }
     internal required AgebBuildingCoordinatesStruct Coordinates1 { get; init; }
     internal required AgebBuildingCoordinatesStruct Coordinates2 { get; init; }
     internal required uint Time { get; init; }
@@ -42,7 +42,7 @@ internal class AgebBuildingStruct
             GroupId = groupId,
             Name = name,
             Unknown1 = unknown1,
-            UnkownData1 = data1,
+            UnknownData1 = data1,
             UnknownData2 = data2,
             UnknownData3 = data3,
             UnknownData4 = data4,

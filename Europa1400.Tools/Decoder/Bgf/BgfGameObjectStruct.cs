@@ -7,7 +7,7 @@ internal class BgfGameObjectStruct
     internal required string Name { get; init; }
     internal required BgfModelStruct? Model { get; init; }
     internal required uint? SkeletonCount { get; init; }
-    internal required IEnumerable<BgfSkeletonStruct>? Skeletons { get; init; }
+    internal required BgfSkeletonStruct[]? Skeletons { get; init; }
 
     internal static BgfGameObjectStruct FromBytes(BinaryReader br)
     {

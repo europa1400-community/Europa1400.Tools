@@ -5,14 +5,10 @@ namespace Europa1400.Tools.Decoder.Sbf
     internal class SoundbankStruct
     {
         internal required SoundbankDefinitionStruct SoundbankDefinition { get; init; }
-
         internal SoundbankHeaderStruct? SoundbankHeader { get; init; }
-
         internal required uint SoundCount { get; init; }
-
-        internal required IEnumerable<SoundDefinitionStruct> SoundDefinitions { get; init; }
-
-        internal required IEnumerable<IEnumerable<byte>> Sounds { get; init; }
+        internal required SoundDefinitionStruct[] SoundDefinitions { get; init; }
+        internal required byte[][] Sounds { get; init; }
 
         internal static SoundbankStruct FromBytes(BinaryReader br, SoundbankDefinitionStruct soundbankDefinition)
         {
@@ -27,7 +23,7 @@ namespace Europa1400.Tools.Decoder.Sbf
                 _ => soundbankHeader!.SoundCount
             };
             var soundDefinitions = br.ReadArray(SoundDefinitionStruct.FromBytes, soundCount);
-            var sounds = br.ReadArray((br, idx) => br.ReadBytes(soundDefinitions.ElementAt(idx).Length), soundCount);
+            var sounds = br.ReadArray((reader, idx) => reader.ReadBytes(soundDefinitions[idx].Length), soundCount);
 
             return new SoundbankStruct
             {

@@ -37,7 +37,7 @@ namespace Europa1400.Tools.Converter
                 jsonWriter.WriteString("Name", building.Name);
                 jsonWriter.WriteNumber("Unknown1", building.Unknown1);
                 jsonWriter.WriteStartArray("UnkownData1");
-                foreach (var data in building.UnkownData1)
+                foreach (var data in building.UnknownData1)
                 {
                     jsonWriter.WriteNumberValue(data);
                 }

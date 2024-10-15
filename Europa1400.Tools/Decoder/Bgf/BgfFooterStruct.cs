@@ -4,7 +4,7 @@ namespace Europa1400.Tools.Decoder.Bgf;
 
 internal class BgfFooterStruct
 {
-    internal required IEnumerable<BgfTextureNameStruct> TextureNames { get; init; }
+    internal required BgfTextureNameStruct[] TextureNames { get; init; }
 
     internal static BgfFooterStruct FromBytes(BinaryReader br)
     {

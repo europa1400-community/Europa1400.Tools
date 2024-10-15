@@ -5,10 +5,8 @@ namespace Europa1400.Tools.Decoder.Gfx;
 internal class TransparencyBlockStruct
 {
     internal required uint Size { get; init; }
-
     internal required uint PixelCount { get; init; }
-
-    internal required IEnumerable<byte> Data { get; init; }
+    internal required byte[] Data { get; init; }
 
     internal static TransparencyBlockStruct FromBytes(BinaryReader br)
     {

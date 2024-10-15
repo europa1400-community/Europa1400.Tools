@@ -4,7 +4,7 @@ namespace Europa1400.Tools.Decoder.Ageb;
 
 internal class AgebStruct
 {
-    internal required IEnumerable<AgebBuildingStruct> Buildings { get; init; }
+    internal required AgebBuildingStruct[] Buildings { get; init; }
 
     internal static AgebStruct FromBytes(BinaryReader br)
     {

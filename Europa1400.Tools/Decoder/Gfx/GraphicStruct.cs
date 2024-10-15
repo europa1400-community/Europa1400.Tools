@@ -5,52 +5,29 @@ namespace Europa1400.Tools.Decoder.Gfx;
 internal class GraphicStruct
 {
     internal required uint Size { get; init; }
-
     internal required ushort Unknown1 { get; init; }
-
     internal required ushort Width { get; init; }
-
     internal required ushort Unknown2 { get; init; }
-
     internal required ushort Height { get; init; }
-
     internal required ushort Unknown3 { get; init; }
-
     internal required ushort Unknown4 { get; init; }
-
     internal required ushort Unknown5 { get; init; }
-
     internal required ushort Width2 { get; init; }
-
     internal required ushort Height2 { get; init; }
-
     internal required ushort Unknown6 { get; init; }
-
     internal required ushort Unknown7 { get; init; }
-
     internal required ushort Unknown8 { get; init; }
-
     internal required ushort Unknown9 { get; init; }
-
     internal required ushort Unknown10 { get; init; }
-
     internal required ushort Unknown11 { get; init; }
-
     internal required ushort Unknown12 { get; init; }
-
     internal required ushort Unknown13 { get; init; }
-
     internal required uint Unknown14 { get; init; }
-
     internal required uint SizeWithoutFooter { get; init; }
-
     internal required uint Unknown15 { get; init; }
-
-    internal required IEnumerable<byte>? PixelData { get; init; }
-
-    internal required IEnumerable<GraphicRowStruct>? GraphicRows { get; init; }
-
-    internal required IEnumerable<uint>? FooterData { get; init; }
+    internal required byte[]? PixelData { get; init; }
+    internal required GraphicRowStruct[]? GraphicRows { get; init; }
+    internal required uint[]? FooterData { get; init; }
 
     internal static GraphicStruct FromBytes(BinaryReader br)
     {
@@ -74,7 +51,7 @@ internal class GraphicStruct
         var unknown13 = br.ReadUInt16();
         var unknown14 = br.ReadUInt32();
         var sizeWithoutFooter = br.ReadUInt32();
-        var Unknown15 = br.ReadUInt32();
+        var unknown15 = br.ReadUInt32();
 
         var pixelData = sizeWithoutFooter > 0 ? br.ReadBytes(width * height * 3) : null;
         var graphicsRows = sizeWithoutFooter > 0 ? br.ReadArray(GraphicRowStruct.FromBytes, height) : null;
@@ -102,7 +79,7 @@ internal class GraphicStruct
             Unknown13 = unknown13,
             Unknown14 = unknown14,
             SizeWithoutFooter = sizeWithoutFooter,
-            Unknown15 = Unknown15,
+            Unknown15 = unknown15,
             PixelData = pixelData,
             GraphicRows = graphicsRows,
             FooterData = footerData

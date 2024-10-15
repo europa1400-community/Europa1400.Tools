@@ -5,29 +5,18 @@ namespace Europa1400.Tools.Decoder.Gfx;
 
 internal class ShapebankStruct
 {
-    internal static IEnumerable<byte> ShapbankConst => Encoding.Latin1.GetBytes("SHAPBANK");
-
+    internal static byte[] ShapbankConst => Encoding.Latin1.GetBytes("SHAPBANK");
     internal required byte Unknown1 { get; init; }
-
     internal required byte Unknown2 { get; init; }
-
     internal required ushort GraphicsCount { get; init; }
-
-    internal required IEnumerable<ushort> UnknownData1 { get; init; }
-
+    internal required ushort[] UnknownData1 { get; init; }
     internal required uint Size { get; init; }
-
     internal required uint Unknown3 { get; init; }
-
     internal required ushort SizeWithoutFooter { get; init; }
-
     internal required ushort Unknown4 { get; init; }
-
-    internal required IEnumerable<uint> Offsets { get; init; }
-
-    internal required IEnumerable<GraphicStruct> Graphics { get; init; }
-
-    internal required IEnumerable<byte>? Footer { get; init; }
+    internal required uint[] Offsets { get; init; }
+    internal required GraphicStruct[] Graphics { get; init; }
+    internal required byte[]? Footer { get; init; }
 
     public static ShapebankStruct FromBytes(BinaryReader br)
     {

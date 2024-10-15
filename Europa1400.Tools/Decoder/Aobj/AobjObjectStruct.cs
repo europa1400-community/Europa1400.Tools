@@ -8,8 +8,8 @@ internal class AobjObjectStruct
     internal required string Name { get; init; }
     internal required byte Level { get; init; }
     internal required uint Time { get; init; }
-    internal required IEnumerable<ushort> UnknownData1 { get; init; }
-    internal required IEnumerable<ushort> UnknownData2 { get; init; }
+    internal required ushort[] UnknownData1 { get; init; }
+    internal required ushort[] UnknownData2 { get; init; }
     internal required ushort Unknown1 { get; init; }
     internal required uint Price { get; init; }
     internal required uint Unknown2 { get; init; }

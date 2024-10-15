@@ -5,8 +5,7 @@ namespace Europa1400.Tools.Decoder.Gfx;
 internal class GfxStruct
 {
     internal required uint ShapebankCount { get; init; }
-
-    internal required IEnumerable<ShapebankDefinitionStruct> ShapebankDefinitions { get; init; }
+    internal required ShapebankDefinitionStruct[] ShapebankDefinitions { get; init; }
 
     internal static GfxStruct FromBytes(BinaryReader br)
     {

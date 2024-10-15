@@ -5,16 +5,11 @@ namespace Europa1400.Tools.Decoder.Sbf;
 internal class SbfStruct
 {
     internal required string Name { get; init; }
-
     internal required uint SoundbankCount { get; init; }
-
-    internal required IEnumerable<byte> MagicBytes { get; init; }
-
-    internal required IEnumerable<byte> Padding { get; init; }
-
-    internal required IEnumerable<SoundbankDefinitionStruct> SoundbankDefinitions { get; init; }
-
-    internal required IEnumerable<SoundbankStruct> Soundbanks { get; init; }
+    internal required byte[] MagicBytes { get; init; }
+    internal required byte[] Padding { get; init; }
+    internal required SoundbankDefinitionStruct[] SoundbankDefinitions { get; init; }
+    internal required SoundbankStruct[] Soundbanks { get; init; }
 
     internal static SbfStruct FromBytes(BinaryReader br)
     {
@@ -23,7 +18,7 @@ internal class SbfStruct
         var magicBytes = br.ReadBytes(4);
         var padding = br.ReadBytes(8);
         var soundbankDefinitions = br.ReadArray(SoundbankDefinitionStruct.FromBytes, soundbankCount);
-        var soundbanks = br.ReadArray((br, idx) => SoundbankStruct.FromBytes(br, soundbankDefinitions.ElementAt(idx)), soundbankCount);
+        var soundbanks = br.ReadArray((reader, idx) => SoundbankStruct.FromBytes(reader, soundbankDefinitions[idx]), soundbankCount);
 
         return new SbfStruct
         {

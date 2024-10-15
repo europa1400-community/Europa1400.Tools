@@ -10,10 +10,10 @@ internal class BgfMappingObjectStruct
     internal required uint TextureCount { get; init; }
     internal required uint VertexMappingCount { get; init; }
     internal required uint PolygonMappingCount { get; init; }
-    internal required IEnumerable<BgfVertexMapping> VertexMappings { get; init; }
-    internal required IEnumerable<BgfVertexMapping> BoxVertexMappings { get; init; }
+    internal required BgfVertexMapping[] VertexMappings { get; init; }
+    internal required BgfVertexMapping[] BoxVertexMappings { get; init; }
     internal required float Unknown4 { get; init; }
-    internal required IEnumerable<BgfPolygonMappingStruct> PolygonMappings { get; init; }
+    internal required BgfPolygonMappingStruct[] PolygonMappings { get; init; }
 
     internal static BgfMappingObjectStruct FromBytes(BinaryReader br)
     {
