@@ -48,7 +48,7 @@ internal class SoundConverter : IConverter
                     var sound = soundbank.Sounds[j];
                     var soundDefinition = soundbank.SoundDefinitions[j];
 
-                    audioBytes.Add(soundDefinition.SoundType == Enums.SoundType.WAV
+                    audioBytes.Add(soundDefinition.SoundType == Enums.SoundType.Wav
                         ? sound.ToArray()
                         : ConvertToWav(sound.ToArray()));
                 }

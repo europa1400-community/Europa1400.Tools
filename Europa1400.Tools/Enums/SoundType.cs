@@ -2,7 +2,7 @@
 {
     internal enum SoundType : uint
     {
-        WAV = 1,
-        MP3 = 2
+        Wav = 1,
+        Mp3 = 2
     }
 }

@@ -7,6 +7,7 @@ internal class AgebBuildingStruct
     internal required byte GroupId { get; init; }
     internal required string Name { get; init; }
     internal required byte Unknown1 { get; init; }
+    internal required byte SizeData { get; init; }
     internal required ushort[] UnknownData1 { get; init; }
     internal required uint[] UnknownData2 { get; init; }
     internal required byte[] UnknownData3 { get; init; }
@@ -42,6 +43,7 @@ internal class AgebBuildingStruct
             GroupId = groupId,
             Name = name,
             Unknown1 = unknown1,
+            SizeData = sizeData,
             UnknownData1 = data1,
             UnknownData2 = data2,
             UnknownData3 = data3,
