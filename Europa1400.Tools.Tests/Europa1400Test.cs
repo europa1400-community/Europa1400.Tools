@@ -1,5 +1,4 @@
 ﻿using Europa1400.Tools.Converter;
-using Xunit.Sdk;
 
 namespace Europa1400.Tools.Tests;
 
@@ -65,5 +64,18 @@ public class Europa1400Test
 
         Assert.True(tempTargetPath.Exists);
         Assert.True(tempTargetPath.GetFiles("*.json", SearchOption.AllDirectories).Length > 0);
+    }
+
+    [Fact]
+    public void TestBgfConverter()
+    {
+        var path = EnvVariables.GameDirectoryPath;
+        var bgfConverter = new BgfConverter
+        {
+            PathToGameFiles = path,
+            TargetDirectory = Directory.CreateTempSubdirectory("Bgf").FullName
+        };
+
+        bgfConverter.Convert();
     }
 }

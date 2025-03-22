@@ -1,40 +1,45 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <PackageId>Europa1400.Tools</PackageId>
-    <Version>0.0.0</Version>
-    <Authors>europa1400-community</Authors>
-    <Company>europa1400-community</Company>
-    <License>MIT</License>
-    <Description>DotNet class library with tools for the Europa 1400: The Guild / Die Gilde game. Can decode, convert and export game assets. </Description>
-    <PackageProjectUrl>https://github.com/europa1400-community/Europa1400.Tools</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/europa1400-community/Europa1400.Tools</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
+    <PropertyGroup>
+        <PackageId>Europa1400.Tools</PackageId>
+        <Version>0.0.0</Version>
+        <Authors>europa1400-community</Authors>
+        <Company>europa1400-community</Company>
+        <License>MIT</License>
+        <Description>DotNet class library with tools for the Europa 1400: The Guild / Die Gilde game. Can decode, convert and export game assets.</Description>
+        <PackageProjectUrl>https://github.com/europa1400-community/Europa1400.Tools</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/europa1400-community/Europa1400.Tools</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
 
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-  </PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="NAudio" Version="2.2.1" />
-    <PackageReference Include="System.Drawing.Common" Version="8.0.8" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Magick.NET-Q8-x64" Version="14.0.0"/>
+        <PackageReference Include="Magick.NET.Core" Version="14.0.0"/>
+        <PackageReference Include="NAudio" Version="2.2.1"/>
+        <PackageReference Include="SharpGLTF.Core" Version="1.0.3"/>
+        <PackageReference Include="SharpGLTF.Runtime" Version="1.0.3"/>
+        <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.3"/>
+        <PackageReference Include="System.Drawing.Common" Version="8.0.8"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Update="Resources.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Resources.resx</DependentUpon>
+        </Compile>
+    </ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Update="Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ResourceS.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Update="Resources.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>ResourceS.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+    </ItemGroup>
 
 </Project>

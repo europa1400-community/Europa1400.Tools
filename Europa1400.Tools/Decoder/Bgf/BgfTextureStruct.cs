@@ -9,6 +9,7 @@ internal class BgfTextureStruct
     internal required string? NameAppendix { get; init; }
     internal required byte? Unknown1 { get; init; }
     internal required byte? Unknown2 { get; init; }
+    internal bool HasTransparency => Unknown2 is not null && Unknown2 != 0;
 
     internal static BgfTextureStruct FromBytes(BinaryReader br)
     {
