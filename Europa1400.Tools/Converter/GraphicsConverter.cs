@@ -5,6 +5,7 @@ using System.Drawing.Imaging;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Europa1400.Tools.Tests")]
+
 namespace Europa1400.Tools.Converter;
 
 #pragma warning disable CA1416 // Validate platform compatibility
@@ -27,11 +28,14 @@ internal class GraphicsConverter : IConverter
 
             Dictionary<string, Dictionary<string, Image>> shapebankImages = [];
 
-            foreach (var shapebank in gfxStruct.ShapebankDefinitions)
+            foreach (var shapebankDefinition in gfxStruct.ShapebankDefinitions)
             {
-                var convertedShapebank = ConvertShapebank(shapebank);
+                if (shapebankDefinition.Shapebank == null)
+                    continue;
 
-                shapebankImages.Add(shapebank.Name, convertedShapebank);
+                var convertedShapebank = ConvertShapebank(shapebankDefinition.Name, shapebankDefinition.Shapebank);
+
+                shapebankImages.Add(shapebankDefinition.Name, convertedShapebank);
             }
 
             foreach (var shapebank in shapebankImages)
@@ -48,38 +52,87 @@ internal class GraphicsConverter : IConverter
         }
     }
 
-    private Dictionary<string, Image> ConvertShapebank(ShapebankDefinitionStruct shapebank)
+    private Dictionary<string, Image> ConvertShapebank(string baseName, ShapebankStruct shapebank)
     {
         var result = new Dictionary<string, Image>();
 
-        if(shapebank.Shapebank == null)
-            throw new InvalidOperationException("Shapebank is null");
-
-        var baseName = shapebank.Name;
-
-        for (var i = 0; i < shapebank.Shapebank.Graphics.Length; i++)
+        for (var i = 0; i < shapebank.Graphics.Length; i++)
         {
-            var graphic = shapebank.Shapebank.Graphics[i];
+            var graphic = shapebank.Graphics[i];
             var convertedGraphic = ConvertGraphic(graphic);
 
-            if(convertedGraphic != null)
-                result.Add($"{baseName}_{i}", convertedGraphic);
+            result.Add($"{baseName}_{i}", convertedGraphic);
         }
 
         return result;
     }
 
-    private Image? ConvertGraphic(GraphicStruct graphic)
+    private Image ConvertGraphic(GraphicStruct graphic)
     {
-        Image? result = null;
+        var result = new Bitmap(graphic.Width, graphic.Height);
 
         if (graphic.PixelData != null)
         {
-            // TODO
+            var row = 0;
+            var col = 0;
+
+            for (var i = 0; i < graphic.Width * graphic.Height; i += 3)
+            {
+                var pixel = Color.FromArgb(255, graphic.PixelData[i], graphic.PixelData[i + 1],
+                    graphic.PixelData[i + 2]);
+
+                result.SetPixel(row, col, pixel);
+
+                if (row == graphic.Width - 1)
+                {
+                    row = 0;
+                    col++;
+                }
+                else
+                    row++;
+            }
         }
-        else if(graphic.GraphicRows != null)
+        else if (graphic.GraphicRows != null)
         {
-            // TODO
+            var transparent = Color.FromArgb(0, 255, 255, 255);
+            var imageData = new List<Color>();
+
+            foreach (var graphicRow in graphic.GraphicRows)
+            {
+                foreach (var transparencyBlock in graphicRow.TransparencyBlocks)
+                {
+                    for (var k = 0; k < transparencyBlock.Size; k += 3)
+                    {
+                        imageData.Add(transparent);
+                    }
+
+                    for (var k = 0; k < transparencyBlock.Data.Length; k += 3)
+                    {
+                        imageData.Add(Color.FromArgb(255, transparencyBlock.Data[k], transparencyBlock.Data[k + 1],
+                            transparencyBlock.Data[k + 2]));
+                    }
+                }
+            }
+
+            if (imageData.Count != graphic.Height * graphic.Width)
+                throw new Exception(
+                    $"Image data does not match graphic dimensions. Expected {graphic.Height * graphic.Width}, got {imageData.Count}");
+
+            var row = 0;
+            var col = 0;
+
+            foreach (var pixel in imageData)
+            {
+                result.SetPixel(row, col, pixel);
+
+                if (row == graphic.Width - 1)
+                {
+                    row = 0;
+                    col++;
+                }
+                else
+                    row++;
+            }
         }
         else
             throw new ArgumentException("Graphic has no pixel data or graphic rows");

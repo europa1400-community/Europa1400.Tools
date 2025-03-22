@@ -36,7 +36,7 @@ public class Europa1400Test
         var tempTargetPathGraphics = new DirectoryInfo(Path.Combine(tempTargetPath.FullName, "Graphics"));
 
         Assert.True(tempTargetPathGraphics.Exists);
-        //Assert.True(tempTargetPathGraphics.GetFiles("*.png", SearchOption.AllDirectories).Length > 0);
+        Assert.True(tempTargetPathGraphics.GetFiles("*.png", SearchOption.AllDirectories).Length > 0);
 
         tempTargetPath.Delete(true);
     }

@@ -5,55 +5,65 @@ namespace Europa1400.Tools.Decoder.Gfx;
 internal class ShapebankDefinitionStruct
 {
     internal required string Name { get; init; }
+    
+    /// <summary>
+    /// Either base address of main shapebank or offset from base address of the main shapebank inc ase of child shapebank definition
+    /// </summary>
     internal required uint Address { get; init; }
     internal required uint Size { get; init; }
-    internal required uint Unknown1 { get; init; }
-    internal required bool Unknown2 { get; init; }
-    internal required uint Unknown3 { get; init; }
+    internal int ChildShapebankCount { get; private set; }
+    internal required uint Unknown2 { get; init; }
     internal required ushort Width { get; init; }
     internal required ushort Height { get; init; }
-    internal bool IsMainShapebank => Address != 0;
-    internal bool IsFont => Width == 0 && Height == 0;
-    internal required ShapebankStruct? Shapebank { get; init; }
+    internal bool IsFont => Name.StartsWith("_FONT");
+    
+    /// <summary>
+    /// Null when shapebank definition is main shapebank
+    /// </summary>
+    internal ShapebankStruct? Shapebank { get; private set; }
 
 
-    internal static ShapebankDefinitionStruct FromBytes(BinaryReader br)
+    internal static ShapebankDefinitionStruct FromBytes(BinaryReader br, bool shouldBeChildShapebank = false)
     {
+        var pos = br.BaseStream.Position;
+        
         var name = br.ReadPaddedString(48);
         var address = br.ReadUInt32();
         br.Skip(4);
         var size = br.ReadUInt32();
-        var magic1 = br.ReadUInt32();
+        var childShapebankCount = br.ReadUInt32();
         br.Skip(4);
-        var magicFlag = br.ReadByte() == 1;
+        var magic2 = br.ReadByte();
         br.Skip(7);
-        var magic2 = br.ReadUInt32();
+        var magic3 = br.ReadUInt32();
         var width = br.ReadUInt16();
         var height = br.ReadUInt16();
-
-        ShapebankStruct? shapebank = null;
-
-        if (address != 0)
-        {
-            var currentPosition = br.BaseStream.Position;
-            
-            br.BaseStream.Position = address;
-            shapebank = ShapebankStruct.FromBytes(br);
-
-            br.BaseStream.Position = currentPosition;
-        }
         
-        return new ShapebankDefinitionStruct
+        var def = new ShapebankDefinitionStruct
         {
             Name = name,
             Address = address,
             Size = size,
-            Unknown1 = magic1,
-            Unknown2 = magicFlag,
-            Unknown3 = magic2,
+            Unknown2 = magic2,
             Width = width,
-            Height = height,
-            Shapebank = shapebank
+            Height = height
         };
+
+        if (shouldBeChildShapebank && address != 0)
+        {
+            br.BaseStream.Position = pos;
+            throw new FormatException("Shapebank is new main shapebank");   
+        }
+        
+        if(!shouldBeChildShapebank)
+        {
+            var childDefs = br.ReadUntilException(r => FromBytes(r, true), typeof(FormatException));
+
+            def.ChildShapebankCount = childDefs.Length;
+            
+            def.Shapebank = ShapebankStruct.FromBytes(br, address);
+        }
+
+        return def;
     }
 }

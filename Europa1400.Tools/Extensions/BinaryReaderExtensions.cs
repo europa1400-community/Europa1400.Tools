@@ -87,9 +87,9 @@ internal static class BinaryReaderExtensions
 
     internal static uint[] ReadPaddedUInt32Array(this BinaryReader reader, int readCount, int padCount)
     {
-        var result = new uint[readCount > padCount ? readCount : padCount];
+        var result = new uint[padCount];
 
-        for (var i = 0; i < readCount; i++)
+        for (var i = 0; i < padCount; i++)
         {
             result[i] = reader.ReadUInt32();
         }
@@ -132,23 +132,23 @@ internal static class BinaryReaderExtensions
     }
 
     internal static T[] ReadUntilException<T>(this BinaryReader br, Func<BinaryReader, T> readFunc, params Type[] exceptionTypes)
-    {
-        var list = new List<T>();
-
-        while (true)
-        {
-            try
-            {
-                list.Add(readFunc(br));
-            }
-            catch (Exception ex) when (Array.Exists(exceptionTypes, t => t.IsInstanceOfType(ex)))
-            {
-                break;
-            }
-        }
-
-        return list.ToArray();
-    }
+         {
+             var list = new List<T>();
+     
+             while (true)
+             {
+                 try
+                 {
+                     list.Add(readFunc(br));
+                 }
+                 catch (Exception ex) when (Array.Exists(exceptionTypes, t => t.IsInstanceOfType(ex)))
+                 {
+                     break;
+                 }
+             }
+     
+             return list.ToArray();
+         }
 
     internal static T[] ReadArray<T>(this BinaryReader br, Func<BinaryReader, T> readFunc, IConvertible? size)
     {
@@ -165,6 +165,27 @@ internal static class BinaryReaderExtensions
             list.Add(readFunc(br));
         }
         
+        return list.ToArray();
+    }
+    
+    internal static T[] ReadUntilException<T>(this BinaryReader br, Func<BinaryReader, int, T> readFunc, params Type[] exceptionTypes)
+    {
+        var list = new List<T>();
+        var idx = 0;
+        
+        while (true)
+        {
+            try
+            {
+                list.Add(readFunc(br, idx));
+                idx++;
+            }
+            catch (Exception ex) when (Array.Exists(exceptionTypes, t => t.IsInstanceOfType(ex)))
+            {
+                break;
+            }
+        }
+
         return list.ToArray();
     }
 

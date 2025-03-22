@@ -25,12 +25,16 @@ internal class GraphicStruct
     internal required uint Unknown14 { get; init; }
     internal required uint SizeWithoutFooter { get; init; }
     internal required uint Unknown15 { get; init; }
+    
     internal required byte[]? PixelData { get; init; }
     internal required GraphicRowStruct[]? GraphicRows { get; init; }
     internal required uint[]? FooterData { get; init; }
 
-    internal static GraphicStruct FromBytes(BinaryReader br)
+    internal static GraphicStruct FromBytes(BinaryReader br, long address)
     {
+        var pos = br.BaseStream.Position;
+        br.BaseStream.Position = address;
+        
         var size = br.ReadUInt32();
         var unknown1 = br.ReadUInt16();
         var width = br.ReadUInt16();
@@ -53,10 +57,12 @@ internal class GraphicStruct
         var sizeWithoutFooter = br.ReadUInt32();
         var unknown15 = br.ReadUInt32();
 
-        var pixelData = sizeWithoutFooter > 0 ? br.ReadBytes(width * height * 3) : null;
+        var pixelData = sizeWithoutFooter == 0 ? br.ReadBytes(width * height * 3) : null;
         var graphicsRows = sizeWithoutFooter > 0 ? br.ReadArray(GraphicRowStruct.FromBytes, height) : null;
         var footerData = sizeWithoutFooter > 0 ? br.ReadUInt32s((size - sizeWithoutFooter) / 4) : null;
 
+        br.BaseStream.Position = pos;
+        
         return new GraphicStruct
         {
             Size = size,

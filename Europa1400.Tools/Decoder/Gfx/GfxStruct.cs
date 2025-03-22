@@ -10,12 +10,22 @@ internal class GfxStruct
     internal static GfxStruct FromBytes(BinaryReader br)
     {
         var shapebankCount = br.ReadUInt32();
-        var shapebankDefinitions = br.ReadArray(ShapebankDefinitionStruct.FromBytes, shapebankCount);
+
+        var shapebankDefinitions = new List<ShapebankDefinitionStruct>();
+        
+        for (var i = 0; i < shapebankCount; i++)
+        {
+            var def = ShapebankDefinitionStruct.FromBytes(br);
+
+            i += def.ChildShapebankCount;
+            
+            shapebankDefinitions.Add(def);
+        }
 
         return new GfxStruct
         {
             ShapebankCount = shapebankCount,
-            ShapebankDefinitions = shapebankDefinitions
+            ShapebankDefinitions = shapebankDefinitions.ToArray()
         };
     }
 }
