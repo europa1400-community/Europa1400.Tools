@@ -1,6 +1,7 @@
-namespace Europa1400.Tools.Pipeline.Assets;
-
-public class TextureAsset : IGameAsset
+namespace Europa1400.Tools.Pipeline.Assets
 {
-    public required string FilePath { get; init; }
+    public class TextureAsset : IGameAsset
+    {
+        public string FilePath { get; set; }
+    }
 }

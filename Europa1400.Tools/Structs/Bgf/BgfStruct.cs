@@ -1,32 +1,34 @@
+using System.IO;
 using Europa1400.Tools.Extensions;
 
-namespace Europa1400.Tools.Structs.Bgf;
-
-public class BgfStruct
+namespace Europa1400.Tools.Structs.Bgf
 {
-    public required BgfHeaderStruct Header { get; init; }
-    public required BgfTextureStruct[] Textures { get; init; }
-    public required BgfGameObjectStruct[] GameObjects { get; init; }
-    public required BgfMappingObjectStruct MappingObject { get; init; }
-    public required BgfFooterStruct Footer { get; init; }
-
-    public static BgfStruct FromBytes(BinaryReader br)
+    public class BgfStruct
     {
-        var header = BgfHeaderStruct.FromBytes(br);
-        var textures = br.ReadUntilException(BgfTextureStruct.FromBytes, typeof(InvalidDataException),
-            typeof(EndOfStreamException));
-        var gameObjects = br.ReadUntilException(BgfGameObjectStruct.FromBytes, typeof(InvalidDataException),
-            typeof(EndOfStreamException));
-        var mappingObject = BgfMappingObjectStruct.FromBytes(br);
-        var footer = BgfFooterStruct.FromBytes(br);
+        public BgfHeaderStruct Header { get; private set; }
+        public BgfTextureStruct[] Textures { get; private set; }
+        public BgfGameObjectStruct[] GameObjects { get; private set; }
+        public BgfMappingObjectStruct MappingObject { get; private set; }
+        public BgfFooterStruct Footer { get; private set; }
 
-        return new BgfStruct
+        public static BgfStruct FromBytes(BinaryReader br)
         {
-            Header = header,
-            Textures = textures,
-            GameObjects = gameObjects,
-            MappingObject = mappingObject,
-            Footer = footer
-        };
+            var header = BgfHeaderStruct.FromBytes(br);
+            var textures = br.ReadUntilException(BgfTextureStruct.FromBytes, typeof(InvalidDataException),
+                typeof(EndOfStreamException));
+            var gameObjects = br.ReadUntilException(BgfGameObjectStruct.FromBytes, typeof(InvalidDataException),
+                typeof(EndOfStreamException));
+            var mappingObject = BgfMappingObjectStruct.FromBytes(br);
+            var footer = BgfFooterStruct.FromBytes(br);
+
+            return new BgfStruct
+            {
+                Header = header,
+                Textures = textures,
+                GameObjects = gameObjects,
+                MappingObject = mappingObject,
+                Footer = footer
+            };
+        }
     }
 }

@@ -1,22 +1,25 @@
-﻿namespace Europa1400.Tools.Structs.Sbf;
+﻿using System.IO;
 
-public class SoundbankHeaderStruct
+namespace Europa1400.Tools.Structs.Sbf
 {
-    public required uint SoundCount { get; init; }
-    public required uint Unknown1 { get; init; }
-    public required uint Unknown2 { get; init; }
-
-    public static SoundbankHeaderStruct FromBytes(BinaryReader br)
+    public class SoundbankHeaderStruct
     {
-        var soundCount = br.ReadUInt32();
-        var magic1 = br.ReadUInt32();
-        var magic2 = br.ReadUInt32();
+        public uint SoundCount { get; private set; }
+        public uint Unknown1 { get; private set; }
+        public uint Unknown2 { get; private set; }
 
-        return new SoundbankHeaderStruct
+        public static SoundbankHeaderStruct FromBytes(BinaryReader br)
         {
-            SoundCount = soundCount,
-            Unknown1 = magic1,
-            Unknown2 = magic2
-        };
+            var soundCount = br.ReadUInt32();
+            var magic1 = br.ReadUInt32();
+            var magic2 = br.ReadUInt32();
+
+            return new SoundbankHeaderStruct
+            {
+                SoundCount = soundCount,
+                Unknown1 = magic1,
+                Unknown2 = magic2
+            };
+        }
     }
 }

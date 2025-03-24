@@ -1,6 +1,7 @@
-namespace Europa1400.Tools.Pipeline.Assets;
-
-public class BafIniAsset : IGameAsset
+namespace Europa1400.Tools.Pipeline.Assets
 {
-    public required string FilePath { get; init; }
+    public class BafIniAsset : IGameAsset
+    {
+        public string FilePath { get; set; }
+    }
 }

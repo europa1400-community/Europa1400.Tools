@@ -1,14 +1,17 @@
-namespace Europa1400.Tools.Pipeline.Assets;
+using System.IO;
 
-public class SbfAsset : IGameAsset
+namespace Europa1400.Tools.Pipeline.Assets
 {
-    private readonly string? _relativePath;
-
-    public string RelativePath
+    public class SbfAsset : IGameAsset
     {
-        get => _relativePath ?? Path.GetFileName(FilePath);
-        init => _relativePath = value;
-    }
+        private string? _relativePath;
 
-    public required string FilePath { get; init; }
+        public string RelativePath
+        {
+            get => _relativePath ?? Path.GetFileName(FilePath);
+            set => _relativePath = value;
+        }
+
+        public string FilePath { get; set; }
+    }
 }

@@ -1,24 +1,26 @@
-﻿using Europa1400.Tools.Extensions;
+﻿using System.IO;
+using Europa1400.Tools.Extensions;
 
-namespace Europa1400.Tools.Structs.Gfx;
-
-public class TransparencyBlockStruct
+namespace Europa1400.Tools.Structs.Gfx
 {
-    public required uint Size { get; init; }
-    public required uint PixelCount { get; init; }
-    public required byte[] Data { get; init; }
-
-    public static TransparencyBlockStruct FromBytes(BinaryReader br)
+    public class TransparencyBlockStruct
     {
-        var size = br.ReadUInt32();
-        var pixelCount = br.ReadUInt32();
-        var data = br.ReadBytes(pixelCount * 3);
+        public uint Size { get; private set; }
+        public uint PixelCount { get; private set; }
+        public byte[] Data { get; private set; }
 
-        return new TransparencyBlockStruct
+        public static TransparencyBlockStruct FromBytes(BinaryReader br)
         {
-            Size = size,
-            PixelCount = pixelCount,
-            Data = data
-        };
+            var size = br.ReadUInt32();
+            var pixelCount = br.ReadUInt32();
+            var data = br.ReadBytes(pixelCount * 3);
+
+            return new TransparencyBlockStruct
+            {
+                Size = size,
+                PixelCount = pixelCount,
+                Data = data
+            };
+        }
     }
 }

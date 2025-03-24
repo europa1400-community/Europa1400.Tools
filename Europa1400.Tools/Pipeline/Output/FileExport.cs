@@ -1,7 +1,8 @@
-namespace Europa1400.Tools.Pipeline.Output;
-
-public class FileExport : IFileExport
+namespace Europa1400.Tools.Pipeline.Output
 {
-    public required string FilePath { get; init; }
-    public required byte[] Content { get; init; }
+    public class FileExport : IFileExport
+    {
+        public string FilePath { get; set; }
+        public byte[] Content { get; set; }
+    }
 }

@@ -1,22 +1,25 @@
-﻿namespace Europa1400.Tools.Structs.Sbf;
+﻿using System.IO;
 
-public class SoundDefinitionStruct
+namespace Europa1400.Tools.Structs.Sbf
 {
-    public required SoundType SoundType { get; init; }
-    public required uint Length { get; init; }
-    public required uint Magic { get; init; }
-
-    public static SoundDefinitionStruct FromBytes(BinaryReader br)
+    public class SoundDefinitionStruct
     {
-        var soundType = (SoundType)br.ReadUInt32();
-        var length = br.ReadUInt32();
-        var magic = br.ReadUInt32();
+        public SoundType SoundType { get; private set; }
+        public uint Length { get; private set; }
+        public uint Magic { get; private set; }
 
-        return new SoundDefinitionStruct
+        public static SoundDefinitionStruct FromBytes(BinaryReader br)
         {
-            SoundType = soundType,
-            Length = length,
-            Magic = magic
-        };
+            var soundType = (SoundType)br.ReadUInt32();
+            var length = br.ReadUInt32();
+            var magic = br.ReadUInt32();
+
+            return new SoundDefinitionStruct
+            {
+                SoundType = soundType,
+                Length = length,
+                Magic = magic
+            };
+        }
     }
 }

@@ -1,97 +1,100 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
 using Europa1400.Tools.Pipeline.Output;
 using Europa1400.Tools.Structs.Gfx;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
+using SkiaSharp;
 
-namespace Europa1400.Tools.Pipeline.Converter;
-
-public class GfxConverter : IConverter<GfxStruct, List<IFileExport>>
+namespace Europa1400.Tools.Pipeline.Converter
 {
-    public List<IFileExport> Convert(GfxStruct input)
+    public class GfxConverter : IConverter<GfxStruct, List<IFileExport>>
     {
-        var exports = new List<IFileExport>();
-
-        foreach (var shapebankDef in input.ShapebankDefinitions)
+        public List<IFileExport> Convert(GfxStruct input)
         {
-            var shapebank = shapebankDef.Shapebank;
-            if (shapebank == null)
-                continue;
+            var exports = new List<IFileExport>();
 
-            var baseName = shapebankDef.Name;
-
-            for (var i = 0; i < shapebank.Graphics.Length; i++)
+            foreach (var shapebankDef in input.ShapebankDefinitions)
             {
-                var graphic = shapebank.Graphics[i];
-                var image = ConvertGraphic(graphic);
+                var shapebank = shapebankDef.Shapebank;
+                if (shapebank == null)
+                    continue;
 
-                using var ms = new MemoryStream();
-                image.SaveAsPng(ms);
+                var baseName = shapebankDef.Name;
 
-                var fileName = $"{baseName}_{i}.png";
-                var filePath = Path.Combine(baseName, fileName).Replace('\\', '/');
-
-                exports.Add(new FileExport
+                for (var i = 0; i < shapebank.Graphics.Length; i++)
                 {
-                    FilePath = filePath,
-                    Content = ms.ToArray()
-                });
-            }
-        }
+                    var graphic = shapebank.Graphics[i];
+                    var image = ConvertGraphic(graphic);
 
-        return exports;
-    }
+                    using var ms = new MemoryStream();
+                    image.Encode(ms, SKEncodedImageFormat.Png, 100);
 
-    private Image<Rgba32> ConvertGraphic(GraphicStruct graphic)
-    {
-        var image = new Image<Rgba32>(graphic.Width, graphic.Height);
+                    var fileName = $"{baseName}_{i}.png";
+                    var filePath = Path.Combine(baseName, fileName).Replace('\\', '/');
 
-        if (graphic.PixelData != null)
-        {
-            int row = 0, col = 0;
-
-            for (var i = 0; i < graphic.PixelData.Length; i += 3)
-            {
-                var color = new Rgba32(graphic.PixelData[i], graphic.PixelData[i + 1], graphic.PixelData[i + 2]);
-                image[row, col] = color;
-
-                row = (row + 1) % graphic.Width;
-                if (row == 0) col++;
-            }
-        }
-        else if (graphic.GraphicRows != null)
-        {
-            var transparent = new Rgba32(255, 255, 255, 0);
-            var pixels = new List<Rgba32>();
-
-            foreach (var graphicRow in graphic.GraphicRows)
-            foreach (var block in graphicRow.TransparencyBlocks)
-            {
-                for (var i = 0; i < block.Size; i += 3)
-                    pixels.Add(transparent);
-
-                for (var i = 0; i < block.Data.Length; i += 3)
-                {
-                    var color = new Rgba32(block.Data[i], block.Data[i + 1], block.Data[i + 2], 255);
-                    pixels.Add(color);
+                    exports.Add(new FileExport
+                    {
+                        FilePath = filePath,
+                        Content = ms.ToArray()
+                    });
                 }
             }
 
-            if (pixels.Count != graphic.Width * graphic.Height)
-                throw new InvalidOperationException("Pixel count mismatch");
-
-            int row = 0, col = 0;
-            foreach (var px in pixels)
-            {
-                image[row, col] = px;
-                row = (row + 1) % graphic.Width;
-                if (row == 0) col++;
-            }
+            return exports;
         }
-        else
+
+        private SKBitmap ConvertGraphic(GraphicStruct graphic)
         {
-            throw new InvalidOperationException("Graphic has no pixel data or graphic rows");
-        }
+            var image = new SKBitmap(graphic.Width, graphic.Height);
 
-        return image;
+            if (graphic.PixelData != null)
+            {
+                int row = 0, col = 0;
+
+                for (var i = 0; i < graphic.PixelData.Length; i += 3)
+                {
+                    var color = new SKColor(graphic.PixelData[i], graphic.PixelData[i + 1], graphic.PixelData[i + 2]);
+                    image.SetPixel(row, col, color);
+
+                    row = (row + 1) % graphic.Width;
+                    if (row == 0) col++;
+                }
+            }
+            else if (graphic.GraphicRows != null)
+            {
+                var transparent = new SKColor(255, 255, 255, 0);
+                var pixels = new List<SKColor>();
+
+                foreach (var graphicRow in graphic.GraphicRows)
+                foreach (var block in graphicRow.TransparencyBlocks)
+                {
+                    for (var i = 0; i < block.Size; i += 3)
+                        pixels.Add(transparent);
+
+                    for (var i = 0; i < block.Data.Length; i += 3)
+                    {
+                        var color = new SKColor(block.Data[i], block.Data[i + 1], block.Data[i + 2], 255);
+                        pixels.Add(color);
+                    }
+                }
+
+                if (pixels.Count != graphic.Width * graphic.Height)
+                    throw new InvalidOperationException("Pixel count mismatch");
+
+                int row = 0, col = 0;
+                foreach (var px in pixels)
+                {
+                    image.SetPixel(row, col, px);
+                    row = (row + 1) % graphic.Width;
+                    if (row == 0) col++;
+                }
+            }
+            else
+            {
+                throw new InvalidOperationException("Graphic has no pixel data or graphic rows");
+            }
+
+            return image;
+        }
     }
 }

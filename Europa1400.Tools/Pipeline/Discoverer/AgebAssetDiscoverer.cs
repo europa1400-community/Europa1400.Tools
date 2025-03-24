@@ -1,22 +1,27 @@
+using System.Collections.Generic;
+using System.IO;
 using Europa1400.Tools.Pipeline.Assets;
 
-namespace Europa1400.Tools.Pipeline.Discoverer;
-
-public class AgebAssetDiscoverer : IAssetDiscoverer<AgebAsset>
+namespace Europa1400.Tools.Pipeline.Discoverer
 {
-    public IEnumerable<AgebAsset> DiscoverAllFromGame(string gamePath)
+    public class AgebAssetDiscoverer : IAssetDiscoverer<AgebAsset>
     {
-        var filePath = Path.Combine(gamePath, "Data", "A_Geb.dat");
+        public IEnumerable<AgebAsset> DiscoverAllFromGame(string gamePath)
+        {
+            var filePath = Path.Combine(gamePath, "Data", "A_Geb.dat");
 
-        if (!File.Exists(filePath)) throw new FileNotFoundException("Ageb file not found", filePath);
+            if (!File.Exists(filePath))
+                throw new FileNotFoundException("Ageb file not found", filePath);
 
-        return [new AgebAsset { FilePath = filePath }];
-    }
+            return new List<AgebAsset> { new AgebAsset { FilePath = filePath } };
+        }
 
-    public AgebAsset WrapSingleFile(string filePath)
-    {
-        if (!File.Exists(filePath)) throw new FileNotFoundException("Ageb file not found", filePath);
+        public AgebAsset WrapSingleFile(string filePath)
+        {
+            if (!File.Exists(filePath))
+                throw new FileNotFoundException("Ageb file not found", filePath);
 
-        return new AgebAsset { FilePath = filePath };
+            return new AgebAsset { FilePath = filePath };
+        }
     }
 }

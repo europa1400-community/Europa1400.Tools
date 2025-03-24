@@ -1,6 +1,7 @@
-namespace Europa1400.Tools.Pipeline.Assets;
-
-public interface IGameAsset
+namespace Europa1400.Tools.Pipeline.Assets
 {
-    string FilePath { get; }
+    public interface IGameAsset
+    {
+        string FilePath { get; }
+    }
 }

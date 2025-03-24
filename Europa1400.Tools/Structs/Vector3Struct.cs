@@ -1,22 +1,25 @@
-namespace Europa1400.Tools.Structs;
+using System.IO;
 
-public class Vector3Struct
+namespace Europa1400.Tools.Structs
 {
-    public required float X { get; init; }
-    public required float Y { get; init; }
-    public required float Z { get; init; }
-
-    public static Vector3Struct FromBytes(BinaryReader br)
+    public class Vector3Struct
     {
-        var x = br.ReadSingle();
-        var y = br.ReadSingle();
-        var z = br.ReadSingle();
+        public float X { get; set; }
+        public float Y { get; set; }
+        public float Z { get; set; }
 
-        return new Vector3Struct
+        public static Vector3Struct FromBytes(BinaryReader br)
         {
-            X = x,
-            Y = y,
-            Z = z
-        };
+            var x = br.ReadSingle();
+            var y = br.ReadSingle();
+            var z = br.ReadSingle();
+
+            return new Vector3Struct
+            {
+                X = x,
+                Y = y,
+                Z = z
+            };
+        }
     }
 }

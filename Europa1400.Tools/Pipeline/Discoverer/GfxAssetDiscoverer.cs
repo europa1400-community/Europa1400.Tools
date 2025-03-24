@@ -1,32 +1,35 @@
+using System.Collections.Generic;
+using System.IO;
 using Europa1400.Tools.Pipeline.Assets;
 
-namespace Europa1400.Tools.Pipeline.Discoverer;
-
-public class GfxAssetDiscoverer : IAssetDiscoverer<GfxAsset>
+namespace Europa1400.Tools.Pipeline.Discoverer
 {
-    public IEnumerable<GfxAsset> DiscoverAllFromGame(string gamePath)
+    public class GfxAssetDiscoverer : IAssetDiscoverer<GfxAsset>
     {
-        var gfxDir = Path.Combine(gamePath, "gfx");
-
-        if (!Directory.Exists(gfxDir))
-            yield break;
-
-        var files = Directory.GetFiles(gfxDir, "*.gfx", SearchOption.TopDirectoryOnly);
-        foreach (var file in files)
-            yield return new GfxAsset
-            {
-                FilePath = file
-            };
-    }
-
-    public GfxAsset WrapSingleFile(string filePath)
-    {
-        if (!File.Exists(filePath))
-            throw new FileNotFoundException("GFX file not found", filePath);
-
-        return new GfxAsset
+        public IEnumerable<GfxAsset> DiscoverAllFromGame(string gamePath)
         {
-            FilePath = Path.GetFullPath(filePath)
-        };
+            var gfxDir = Path.Combine(gamePath, "gfx");
+
+            if (!Directory.Exists(gfxDir))
+                yield break;
+
+            var files = Directory.GetFiles(gfxDir, "*.gfx", SearchOption.TopDirectoryOnly);
+            foreach (var file in files)
+                yield return new GfxAsset
+                {
+                    FilePath = file
+                };
+        }
+
+        public GfxAsset WrapSingleFile(string filePath)
+        {
+            if (!File.Exists(filePath))
+                throw new FileNotFoundException("GFX file not found", filePath);
+
+            return new GfxAsset
+            {
+                FilePath = Path.GetFullPath(filePath)
+            };
+        }
     }
 }
