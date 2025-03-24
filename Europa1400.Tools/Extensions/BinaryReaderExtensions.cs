@@ -12,7 +12,12 @@ namespace Europa1400.Tools.Extensions
         public static string ReadString(this BinaryReader reader, int length)
         {
             var bytes = reader.ReadBytes(length);
-            return Encoding.ASCII.GetString(bytes);
+            var latin1 = Encoding.GetEncoding(28591);
+            
+            if(latin1 == null)
+                throw new NullReferenceException("Latin1 encoding not found.");
+                
+            return latin1.GetString(bytes);
         }
 
         public static byte PeekByte(this BinaryReader reader)
