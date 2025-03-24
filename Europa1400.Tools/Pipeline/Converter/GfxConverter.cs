@@ -1,7 +1,7 @@
-using System.Drawing;
-using System.Drawing.Imaging;
 using Europa1400.Tools.Pipeline.Output;
 using Europa1400.Tools.Structs.Gfx;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace Europa1400.Tools.Pipeline.Converter;
 
@@ -22,62 +22,76 @@ public class GfxConverter : IConverter<GfxStruct, List<IFileExport>>
             for (var i = 0; i < shapebank.Graphics.Length; i++)
             {
                 var graphic = shapebank.Graphics[i];
-                var bitmap = ConvertGraphic(graphic);
+                var image = ConvertGraphic(graphic);
 
                 using var ms = new MemoryStream();
-                bitmap.Save(ms, ImageFormat.Png);
+                image.SaveAsPng(ms);
 
                 var fileName = $"{baseName}_{i}.png";
                 var filePath = Path.Combine(baseName, fileName).Replace('\\', '/');
 
-                exports.Add(new FileExport { FilePath = filePath, Content = ms.ToArray() });
+                exports.Add(new FileExport
+                {
+                    FilePath = filePath,
+                    Content = ms.ToArray()
+                });
             }
         }
 
         return exports;
     }
 
-    private Bitmap ConvertGraphic(GraphicStruct graphic)
+    private Image<Rgba32> ConvertGraphic(GraphicStruct graphic)
     {
-        var bmp = new Bitmap(graphic.Width, graphic.Height);
+        var image = new Image<Rgba32>(graphic.Width, graphic.Height);
 
         if (graphic.PixelData != null)
         {
             int row = 0, col = 0;
-            for (var i = 0; i < graphic.Width * graphic.Height * 3; i += 3)
+
+            for (var i = 0; i < graphic.PixelData.Length; i += 3)
             {
-                var color = Color.FromArgb(255, graphic.PixelData[i], graphic.PixelData[i + 1],
-                    graphic.PixelData[i + 2]);
-                bmp.SetPixel(row, col, color);
+                var color = new Rgba32(graphic.PixelData[i], graphic.PixelData[i + 1], graphic.PixelData[i + 2]);
+                image[row, col] = color;
+
                 row = (row + 1) % graphic.Width;
                 if (row == 0) col++;
             }
         }
         else if (graphic.GraphicRows != null)
         {
-            var transparent = Color.FromArgb(0, 255, 255, 255);
-            var pixels = new List<Color>();
+            var transparent = new Rgba32(255, 255, 255, 0);
+            var pixels = new List<Rgba32>();
 
-            foreach (var row in graphic.GraphicRows)
-            foreach (var block in row.TransparencyBlocks)
+            foreach (var graphicRow in graphic.GraphicRows)
+            foreach (var block in graphicRow.TransparencyBlocks)
             {
-                pixels.AddRange(Enumerable.Repeat(transparent, (int)(block.Size / 3)));
+                for (var i = 0; i < block.Size; i += 3)
+                    pixels.Add(transparent);
+
                 for (var i = 0; i < block.Data.Length; i += 3)
-                    pixels.Add(Color.FromArgb(255, block.Data[i], block.Data[i + 1], block.Data[i + 2]));
+                {
+                    var color = new Rgba32(block.Data[i], block.Data[i + 1], block.Data[i + 2], 255);
+                    pixels.Add(color);
+                }
             }
 
             if (pixels.Count != graphic.Width * graphic.Height)
                 throw new InvalidOperationException("Pixel count mismatch");
 
-            int rowIdx = 0, colIdx = 0;
+            int row = 0, col = 0;
             foreach (var px in pixels)
             {
-                bmp.SetPixel(rowIdx, colIdx, px);
-                rowIdx = (rowIdx + 1) % graphic.Width;
-                if (rowIdx == 0) colIdx++;
+                image[row, col] = px;
+                row = (row + 1) % graphic.Width;
+                if (row == 0) col++;
             }
         }
+        else
+        {
+            throw new InvalidOperationException("Graphic has no pixel data or graphic rows");
+        }
 
-        return bmp;
+        return image;
     }
 }
