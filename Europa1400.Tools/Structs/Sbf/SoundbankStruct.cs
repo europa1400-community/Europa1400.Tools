@@ -1,37 +1,39 @@
-﻿using Europa1400.Tools.Extensions;
+﻿using System.IO;
+using Europa1400.Tools.Extensions;
 
-namespace Europa1400.Tools.Structs.Sbf;
-
-public class SoundbankStruct
+namespace Europa1400.Tools.Structs.Sbf
 {
-    public required SoundbankDefinitionStruct SoundbankDefinition { get; init; }
-    public SoundbankHeaderStruct? SoundbankHeader { get; init; }
-    public required uint SoundCount { get; init; }
-    public required SoundDefinitionStruct[] SoundDefinitions { get; init; }
-    public required byte[][] Sounds { get; init; }
-
-    public static SoundbankStruct FromBytes(BinaryReader br, SoundbankDefinitionStruct soundbankDefinition)
+    public class SoundbankStruct
     {
-        var soundbankHeader = soundbankDefinition.SoundbankType switch
-        {
-            SoundbankType.Multi => SoundbankHeaderStruct.FromBytes(br),
-            _ => null
-        };
-        var soundCount = soundbankDefinition.SoundbankType switch
-        {
-            SoundbankType.Single => (uint)1,
-            _ => soundbankHeader!.SoundCount
-        };
-        var soundDefinitions = br.ReadArray(SoundDefinitionStruct.FromBytes, soundCount);
-        var sounds = br.ReadArray((reader, idx) => reader.ReadBytes(soundDefinitions[idx].Length), soundCount);
+        public SoundbankDefinitionStruct SoundbankDefinition { get; private set; }
+        public SoundbankHeaderStruct? SoundbankHeader { get; private set; }
+        public uint SoundCount { get; private set; }
+        public SoundDefinitionStruct[] SoundDefinitions { get; private set; }
+        public byte[][] Sounds { get; private set; }
 
-        return new SoundbankStruct
+        public static SoundbankStruct FromBytes(BinaryReader br, SoundbankDefinitionStruct soundbankDefinition)
         {
-            SoundbankDefinition = soundbankDefinition,
-            SoundbankHeader = soundbankHeader,
-            SoundCount = soundCount,
-            Sounds = sounds,
-            SoundDefinitions = soundDefinitions
-        };
+            var soundbankHeader = soundbankDefinition.SoundbankType switch
+            {
+                SoundbankType.Multi => SoundbankHeaderStruct.FromBytes(br),
+                _ => null
+            };
+            var soundCount = soundbankDefinition.SoundbankType switch
+            {
+                SoundbankType.Single => (uint)1,
+                _ => soundbankHeader!.SoundCount
+            };
+            var soundDefinitions = br.ReadArray(SoundDefinitionStruct.FromBytes, soundCount);
+            var sounds = br.ReadArray((reader, idx) => reader.ReadBytes(soundDefinitions[idx].Length), soundCount);
+
+            return new SoundbankStruct
+            {
+                SoundbankDefinition = soundbankDefinition,
+                SoundbankHeader = soundbankHeader,
+                SoundCount = soundCount,
+                Sounds = sounds,
+                SoundDefinitions = soundDefinitions
+            };
+        }
     }
 }

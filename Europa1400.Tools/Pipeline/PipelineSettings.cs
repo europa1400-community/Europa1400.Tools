@@ -1,6 +1,9 @@
-namespace Europa1400.Tools.Pipeline;
+using System.IO;
 
-public static class PipelineSettings
+namespace Europa1400.Tools.Pipeline
 {
-    public static string CacheRoot { get; set; } = Path.GetFullPath("./cache");
+    public static class PipelineSettings
+    {
+        public static string CacheRoot { get; set; } = Path.GetFullPath("./cache");
+    }
 }

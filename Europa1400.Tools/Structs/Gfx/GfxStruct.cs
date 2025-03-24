@@ -1,29 +1,33 @@
-﻿namespace Europa1400.Tools.Structs.Gfx;
+﻿using System.Collections.Generic;
+using System.IO;
 
-public class GfxStruct
+namespace Europa1400.Tools.Structs.Gfx
 {
-    public required uint ShapebankCount { get; init; }
-    public required ShapebankDefinitionStruct[] ShapebankDefinitions { get; init; }
-
-    public static GfxStruct FromBytes(BinaryReader br)
+    public class GfxStruct
     {
-        var shapebankCount = br.ReadUInt32();
+        public uint ShapebankCount { get; private set; }
+        public ShapebankDefinitionStruct[] ShapebankDefinitions { get; private set; }
 
-        var shapebankDefinitions = new List<ShapebankDefinitionStruct>();
-
-        for (var i = 0; i < shapebankCount; i++)
+        public static GfxStruct FromBytes(BinaryReader br)
         {
-            var def = ShapebankDefinitionStruct.FromBytes(br);
+            var shapebankCount = br.ReadUInt32();
 
-            i += def.ChildShapebankCount;
+            var shapebankDefinitions = new List<ShapebankDefinitionStruct>();
 
-            shapebankDefinitions.Add(def);
+            for (var i = 0; i < shapebankCount; i++)
+            {
+                var def = ShapebankDefinitionStruct.FromBytes(br);
+
+                i += def.ChildShapebankCount;
+
+                shapebankDefinitions.Add(def);
+            }
+
+            return new GfxStruct
+            {
+                ShapebankCount = shapebankCount,
+                ShapebankDefinitions = shapebankDefinitions.ToArray()
+            };
         }
-
-        return new GfxStruct
-        {
-            ShapebankCount = shapebankCount,
-            ShapebankDefinitions = shapebankDefinitions.ToArray()
-        };
     }
 }

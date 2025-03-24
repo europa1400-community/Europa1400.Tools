@@ -1,27 +1,29 @@
-﻿using Europa1400.Tools.Extensions;
+﻿using System.IO;
+using Europa1400.Tools.Extensions;
 
-namespace Europa1400.Tools.Structs.Sbf;
-
-public class SoundbankDefinitionStruct
+namespace Europa1400.Tools.Structs.Sbf
 {
-    public required uint Address { get; init; }
-    public required string Name { get; init; }
-    public required SoundbankType SoundbankType { get; init; }
-    public required byte[] Padding { get; init; }
-
-    public static SoundbankDefinitionStruct FromBytes(BinaryReader br)
+    public class SoundbankDefinitionStruct
     {
-        var address = br.ReadUInt32();
-        var name = br.ReadPaddedString(50);
-        var soundbankType = (SoundbankType)br.ReadUInt16();
-        var padding = br.ReadBytes(8);
+        public uint Address { get; private set; }
+        public string Name { get; private set; }
+        public SoundbankType SoundbankType { get; private set; }
+        public byte[] Padding { get; private set; }
 
-        return new SoundbankDefinitionStruct
+        public static SoundbankDefinitionStruct FromBytes(BinaryReader br)
         {
-            Address = address,
-            Name = name,
-            Padding = padding,
-            SoundbankType = soundbankType
-        };
+            var address = br.ReadUInt32();
+            var name = br.ReadPaddedString(50);
+            var soundbankType = (SoundbankType)br.ReadUInt16();
+            var padding = br.ReadBytes(8);
+
+            return new SoundbankDefinitionStruct
+            {
+                Address = address,
+                Name = name,
+                Padding = padding,
+                SoundbankType = soundbankType
+            };
+        }
     }
 }

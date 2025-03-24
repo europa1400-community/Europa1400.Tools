@@ -1,19 +1,21 @@
+using System.IO;
 using Europa1400.Tools.Extensions;
 
-namespace Europa1400.Tools.Structs.Bgf;
-
-public class BgfFooterStruct
+namespace Europa1400.Tools.Structs.Bgf
 {
-    public required BgfTextureNameStruct[] TextureNames { get; init; }
-
-    public static BgfFooterStruct FromBytes(BinaryReader br)
+    public class BgfFooterStruct
     {
-        var textureNames = br.ReadUntilException(BgfTextureNameStruct.FromBytes, typeof(InvalidDataException),
-            typeof(EndOfStreamException));
+        public BgfTextureNameStruct[] TextureNames { get; private set; }
 
-        return new BgfFooterStruct
+        public static BgfFooterStruct FromBytes(BinaryReader br)
         {
-            TextureNames = textureNames
-        };
+            var textureNames = br.ReadUntilException(BgfTextureNameStruct.FromBytes, typeof(InvalidDataException),
+                typeof(EndOfStreamException));
+
+            return new BgfFooterStruct
+            {
+                TextureNames = textureNames
+            };
+        }
     }
 }

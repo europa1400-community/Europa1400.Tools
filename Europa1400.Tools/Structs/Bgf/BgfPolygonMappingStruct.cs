@@ -1,22 +1,25 @@
-namespace Europa1400.Tools.Structs.Bgf;
+using System.IO;
 
-public class BgfPolygonMappingStruct
+namespace Europa1400.Tools.Structs.Bgf
 {
-    public required BgfFaceStruct Face { get; init; }
-    public required BgfTextureMappingStruct TextureMapping { get; init; }
-    public required byte TextureIndex { get; init; }
-
-    public static BgfPolygonMappingStruct FromBytes(BinaryReader br)
+    public class BgfPolygonMappingStruct
     {
-        var face = BgfFaceStruct.FromBytes(br);
-        var textureMapping = BgfTextureMappingStruct.FromBytes(br);
-        var textureIndex = br.ReadByte();
+        public BgfFaceStruct Face { get; private set; }
+        public BgfTextureMappingStruct TextureMapping { get; private set; }
+        public byte TextureIndex { get; private set; }
 
-        return new BgfPolygonMappingStruct
+        public static BgfPolygonMappingStruct FromBytes(BinaryReader br)
         {
-            Face = face,
-            TextureMapping = textureMapping,
-            TextureIndex = textureIndex
-        };
+            var face = BgfFaceStruct.FromBytes(br);
+            var textureMapping = BgfTextureMappingStruct.FromBytes(br);
+            var textureIndex = br.ReadByte();
+
+            return new BgfPolygonMappingStruct
+            {
+                Face = face,
+                TextureMapping = textureMapping,
+                TextureIndex = textureIndex
+            };
+        }
     }
 }

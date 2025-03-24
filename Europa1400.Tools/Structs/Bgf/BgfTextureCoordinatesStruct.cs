@@ -1,22 +1,25 @@
-namespace Europa1400.Tools.Structs.Bgf;
+using System.IO;
 
-public class BgfTextureCoordinatesStruct
+namespace Europa1400.Tools.Structs.Bgf
 {
-    public required float U { get; init; }
-    public required float V { get; init; }
-    public required float W { get; init; }
-
-    public static BgfTextureCoordinatesStruct FromBytes(BinaryReader br)
+    public class BgfTextureCoordinatesStruct
     {
-        var u = br.ReadSingle();
-        var v = br.ReadSingle();
-        var w = br.ReadSingle();
+        public float U { get; set; }
+        public float V { get; set; }
+        public float W { get; set; }
 
-        return new BgfTextureCoordinatesStruct
+        public static BgfTextureCoordinatesStruct FromBytes(BinaryReader br)
         {
-            U = u,
-            V = v,
-            W = w
-        };
+            var u = br.ReadSingle();
+            var v = br.ReadSingle();
+            var w = br.ReadSingle();
+
+            return new BgfTextureCoordinatesStruct
+            {
+                U = u,
+                V = v,
+                W = w
+            };
+        }
     }
 }

@@ -1,94 +1,96 @@
-﻿using Europa1400.Tools.Extensions;
+﻿using System.IO;
+using Europa1400.Tools.Extensions;
 
-namespace Europa1400.Tools.Structs.Gfx;
-
-public class GraphicStruct
+namespace Europa1400.Tools.Structs.Gfx
 {
-    public required uint Size { get; init; }
-    public required ushort Unknown1 { get; init; }
-    public required ushort Width { get; init; }
-    public required ushort Unknown2 { get; init; }
-    public required ushort Height { get; init; }
-    public required ushort Unknown3 { get; init; }
-    public required ushort Unknown4 { get; init; }
-    public required ushort Unknown5 { get; init; }
-    public required ushort Width2 { get; init; }
-    public required ushort Height2 { get; init; }
-    public required ushort Unknown6 { get; init; }
-    public required ushort Unknown7 { get; init; }
-    public required ushort Unknown8 { get; init; }
-    public required ushort Unknown9 { get; init; }
-    public required ushort Unknown10 { get; init; }
-    public required ushort Unknown11 { get; init; }
-    public required ushort Unknown12 { get; init; }
-    public required ushort Unknown13 { get; init; }
-    public required uint Unknown14 { get; init; }
-    public required uint SizeWithoutFooter { get; init; }
-    public required uint Unknown15 { get; init; }
-
-    public required byte[]? PixelData { get; init; }
-    public required GraphicRowStruct[]? GraphicRows { get; init; }
-    public required uint[]? FooterData { get; init; }
-
-    public static GraphicStruct FromBytes(BinaryReader br, long address)
+    public class GraphicStruct
     {
-        var pos = br.BaseStream.Position;
-        br.BaseStream.Position = address;
+        public uint Size { get; private set; }
+        public ushort Unknown1 { get; private set; }
+        public ushort Width { get; private set; }
+        public ushort Unknown2 { get; private set; }
+        public ushort Height { get; private set; }
+        public ushort Unknown3 { get; private set; }
+        public ushort Unknown4 { get; private set; }
+        public ushort Unknown5 { get; private set; }
+        public ushort Width2 { get; private set; }
+        public ushort Height2 { get; private set; }
+        public ushort Unknown6 { get; private set; }
+        public ushort Unknown7 { get; private set; }
+        public ushort Unknown8 { get; private set; }
+        public ushort Unknown9 { get; private set; }
+        public ushort Unknown10 { get; private set; }
+        public ushort Unknown11 { get; private set; }
+        public ushort Unknown12 { get; private set; }
+        public ushort Unknown13 { get; private set; }
+        public uint Unknown14 { get; private set; }
+        public uint SizeWithoutFooter { get; private set; }
+        public uint Unknown15 { get; private set; }
 
-        var size = br.ReadUInt32();
-        var unknown1 = br.ReadUInt16();
-        var width = br.ReadUInt16();
-        var unknown2 = br.ReadUInt16();
-        var height = br.ReadUInt16();
-        var unknown3 = br.ReadUInt16();
-        var unknown4 = br.ReadUInt16();
-        var unknown5 = br.ReadUInt16();
-        var width2 = br.ReadUInt16();
-        var height2 = br.ReadUInt16();
-        var unknown6 = br.ReadUInt16();
-        var unknown7 = br.ReadUInt16();
-        var unknown8 = br.ReadUInt16();
-        var unknown9 = br.ReadUInt16();
-        var unknown10 = br.ReadUInt16();
-        var unknown11 = br.ReadUInt16();
-        var unknown12 = br.ReadUInt16();
-        var unknown13 = br.ReadUInt16();
-        var unknown14 = br.ReadUInt32();
-        var sizeWithoutFooter = br.ReadUInt32();
-        var unknown15 = br.ReadUInt32();
+        public byte[]? PixelData { get; private set; }
+        public GraphicRowStruct[]? GraphicRows { get; private set; }
+        public uint[]? FooterData { get; private set; }
 
-        var pixelData = sizeWithoutFooter == 0 ? br.ReadBytes(width * height * 3) : null;
-        var graphicsRows = sizeWithoutFooter > 0 ? br.ReadArray(GraphicRowStruct.FromBytes, height) : null;
-        var footerData = sizeWithoutFooter > 0 ? br.ReadUInt32s((size - sizeWithoutFooter) / 4) : null;
-
-        br.BaseStream.Position = pos;
-
-        return new GraphicStruct
+        public static GraphicStruct FromBytes(BinaryReader br, long address)
         {
-            Size = size,
-            Unknown1 = unknown1,
-            Width = width,
-            Height = height,
-            Unknown2 = unknown2,
-            Unknown3 = unknown3,
-            Unknown4 = unknown4,
-            Unknown5 = unknown5,
-            Width2 = width2,
-            Height2 = height2,
-            Unknown6 = unknown6,
-            Unknown7 = unknown7,
-            Unknown8 = unknown8,
-            Unknown9 = unknown9,
-            Unknown10 = unknown10,
-            Unknown11 = unknown11,
-            Unknown12 = unknown12,
-            Unknown13 = unknown13,
-            Unknown14 = unknown14,
-            SizeWithoutFooter = sizeWithoutFooter,
-            Unknown15 = unknown15,
-            PixelData = pixelData,
-            GraphicRows = graphicsRows,
-            FooterData = footerData
-        };
+            var pos = br.BaseStream.Position;
+            br.BaseStream.Position = address;
+
+            var size = br.ReadUInt32();
+            var unknown1 = br.ReadUInt16();
+            var width = br.ReadUInt16();
+            var unknown2 = br.ReadUInt16();
+            var height = br.ReadUInt16();
+            var unknown3 = br.ReadUInt16();
+            var unknown4 = br.ReadUInt16();
+            var unknown5 = br.ReadUInt16();
+            var width2 = br.ReadUInt16();
+            var height2 = br.ReadUInt16();
+            var unknown6 = br.ReadUInt16();
+            var unknown7 = br.ReadUInt16();
+            var unknown8 = br.ReadUInt16();
+            var unknown9 = br.ReadUInt16();
+            var unknown10 = br.ReadUInt16();
+            var unknown11 = br.ReadUInt16();
+            var unknown12 = br.ReadUInt16();
+            var unknown13 = br.ReadUInt16();
+            var unknown14 = br.ReadUInt32();
+            var sizeWithoutFooter = br.ReadUInt32();
+            var unknown15 = br.ReadUInt32();
+
+            var pixelData = sizeWithoutFooter == 0 ? br.ReadBytes(width * height * 3) : null;
+            var graphicsRows = sizeWithoutFooter > 0 ? br.ReadArray(GraphicRowStruct.FromBytes, height) : null;
+            var footerData = sizeWithoutFooter > 0 ? br.ReadUInt32s((size - sizeWithoutFooter) / 4) : null;
+
+            br.BaseStream.Position = pos;
+
+            return new GraphicStruct
+            {
+                Size = size,
+                Unknown1 = unknown1,
+                Width = width,
+                Height = height,
+                Unknown2 = unknown2,
+                Unknown3 = unknown3,
+                Unknown4 = unknown4,
+                Unknown5 = unknown5,
+                Width2 = width2,
+                Height2 = height2,
+                Unknown6 = unknown6,
+                Unknown7 = unknown7,
+                Unknown8 = unknown8,
+                Unknown9 = unknown9,
+                Unknown10 = unknown10,
+                Unknown11 = unknown11,
+                Unknown12 = unknown12,
+                Unknown13 = unknown13,
+                Unknown14 = unknown14,
+                SizeWithoutFooter = sizeWithoutFooter,
+                Unknown15 = unknown15,
+                PixelData = pixelData,
+                GraphicRows = graphicsRows,
+                FooterData = footerData
+            };
+        }
     }
 }

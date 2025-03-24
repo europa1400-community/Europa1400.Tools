@@ -1,18 +1,20 @@
+using System.IO;
 using Europa1400.Tools.Extensions;
 
-namespace Europa1400.Tools.Structs.Ageb;
-
-public class AgebStruct
+namespace Europa1400.Tools.Structs.Ageb
 {
-    public required AgebBuildingStruct[] Buildings { get; init; }
-
-    public static AgebStruct FromBytes(BinaryReader br)
+    public class AgebStruct
     {
-        var buildings = br.ReadArray(AgebBuildingStruct.FromBytes, 88);
+        public AgebBuildingStruct[] Buildings { get; private set; }
 
-        return new AgebStruct
+        public static AgebStruct FromBytes(BinaryReader br)
         {
-            Buildings = buildings
-        };
+            var buildings = br.ReadArray(AgebBuildingStruct.FromBytes, 88);
+
+            return new AgebStruct
+            {
+                Buildings = buildings
+            };
+        }
     }
 }

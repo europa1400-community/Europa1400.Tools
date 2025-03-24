@@ -1,24 +1,27 @@
-namespace Europa1400.Tools.Structs.Ageb;
+using System.IO;
 
-public class AgebBuildingCoordinatesStruct
+namespace Europa1400.Tools.Structs.Ageb
 {
-    public required byte X { get; init; }
-
-    public required byte Y { get; init; }
-
-    public required byte Z { get; init; }
-
-    public static AgebBuildingCoordinatesStruct FromBytes(BinaryReader br)
+    public class AgebBuildingCoordinatesStruct
     {
-        var x = br.ReadByte();
-        var y = br.ReadByte();
-        var z = br.ReadByte();
+        public byte X { get; private set; }
 
-        return new AgebBuildingCoordinatesStruct
+        public byte Y { get; private set; }
+
+        public byte Z { get; private set; }
+
+        public static AgebBuildingCoordinatesStruct FromBytes(BinaryReader br)
         {
-            X = x,
-            Y = y,
-            Z = z
-        };
+            var x = br.ReadByte();
+            var y = br.ReadByte();
+            var z = br.ReadByte();
+
+            return new AgebBuildingCoordinatesStruct
+            {
+                X = x,
+                Y = y,
+                Z = z
+            };
+        }
     }
 }

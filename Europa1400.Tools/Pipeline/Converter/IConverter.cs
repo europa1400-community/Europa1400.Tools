@@ -1,6 +1,7 @@
-namespace Europa1400.Tools.Pipeline.Converter;
-
-public interface IConverter<in TDecoded, out TOutput>
+namespace Europa1400.Tools.Pipeline.Converter
 {
-    TOutput Convert(TDecoded input);
+    public interface IConverter<in TDecoded, out TOutput>
+    {
+        TOutput Convert(TDecoded input);
+    }
 }

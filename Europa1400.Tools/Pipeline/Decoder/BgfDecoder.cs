@@ -1,14 +1,16 @@
+using System.IO;
 using Europa1400.Tools.Pipeline.Assets;
 using Europa1400.Tools.Structs.Bgf;
 
-namespace Europa1400.Tools.Pipeline.Decoder;
-
-public class BgfDecoder : IDecoder<BgfAsset, BgfStruct>
+namespace Europa1400.Tools.Pipeline.Decoder
 {
-    public BgfStruct Decode(BgfAsset asset)
+    public class BgfDecoder : IDecoder<BgfAsset, BgfStruct>
     {
-        using var stream = File.OpenRead(asset.FilePath);
-        using var reader = new BinaryReader(stream);
-        return BgfStruct.FromBytes(reader);
+        public BgfStruct Decode(BgfAsset asset)
+        {
+            using var stream = File.OpenRead(asset.FilePath);
+            using var reader = new BinaryReader(stream);
+            return BgfStruct.FromBytes(reader);
+        }
     }
 }

@@ -1,20 +1,22 @@
+using System.IO;
 using Europa1400.Tools.Extensions;
 
-namespace Europa1400.Tools.Structs.Bgf;
-
-public class BgfTextureNameStruct
+namespace Europa1400.Tools.Structs.Bgf
 {
-    public required string Name { get; init; }
-
-    public static BgfTextureNameStruct FromBytes(BinaryReader br)
+    public class BgfTextureNameStruct
     {
-        var name = br.ReadCString();
-        br.SkipNonLatin1();
-        br.SkipOptionalByte(0x2F);
+        public string Name { get; private set; }
 
-        return new BgfTextureNameStruct
+        public static BgfTextureNameStruct FromBytes(BinaryReader br)
         {
-            Name = name
-        };
+            var name = br.ReadCString();
+            br.SkipNonLatin1();
+            br.SkipOptionalByte(0x2F);
+
+            return new BgfTextureNameStruct
+            {
+                Name = name
+            };
+        }
     }
 }

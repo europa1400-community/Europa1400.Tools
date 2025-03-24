@@ -1,22 +1,25 @@
-namespace Europa1400.Tools.Structs.Bgf;
+using System.IO;
 
-public class BgfFaceStruct
+namespace Europa1400.Tools.Structs.Bgf
 {
-    public required uint A { get; init; }
-    public required uint B { get; init; }
-    public required uint C { get; init; }
-
-    public static BgfFaceStruct FromBytes(BinaryReader br)
+    public class BgfFaceStruct
     {
-        var a = br.ReadUInt32();
-        var b = br.ReadUInt32();
-        var c = br.ReadUInt32();
+        public uint A { get; private set; }
+        public uint B { get; private set; }
+        public uint C { get; private set; }
 
-        return new BgfFaceStruct
+        public static BgfFaceStruct FromBytes(BinaryReader br)
         {
-            A = a,
-            B = b,
-            C = c
-        };
+            var a = br.ReadUInt32();
+            var b = br.ReadUInt32();
+            var c = br.ReadUInt32();
+
+            return new BgfFaceStruct
+            {
+                A = a,
+                B = b,
+                C = c
+            };
+        }
     }
 }

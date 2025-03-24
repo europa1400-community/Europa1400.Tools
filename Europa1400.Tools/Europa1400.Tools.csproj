@@ -11,15 +11,17 @@
     <RepositoryUrl>https://github.com/europa1400-community/Europa1400.Tools</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
 
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <TargetFrameworks>net8.0;netstandard2.1</TargetFrameworks>
+    <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
+      <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
       <PackageReference Include="MP3Sharp" Version="1.0.5"/>
       <PackageReference Include="NAudio.Core" Version="2.2.1"/>
-      <PackageReference Include="SixLabors.ImageSharp" Version="3.1.7"/>
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+      <PackageReference Include="SkiaSharp" Version="3.116.1" />
   </ItemGroup>
 </Project>
