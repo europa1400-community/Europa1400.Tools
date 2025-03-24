@@ -1,69 +1,88 @@
-﻿using Europa1400.Tools.Converter;
-using Xunit.Sdk;
+﻿using Europa1400.Tools.Pipeline;
+using Europa1400.Tools.Pipeline.Assets;
+using Europa1400.Tools.Pipeline.Converter;
+using Europa1400.Tools.Pipeline.Decoder;
+using Europa1400.Tools.Pipeline.Output;
+using Europa1400.Tools.Structs.Ageb;
+using Europa1400.Tools.Structs.Aobj;
+using Europa1400.Tools.Structs.Bgf;
+using Europa1400.Tools.Structs.Gfx;
+using Europa1400.Tools.Structs.Sbf;
+using Xunit.Abstractions;
 
 namespace Europa1400.Tools.Tests;
 
-public class Europa1400Test
+public class Europa1400Test(ITestOutputHelper testOutputHelper)
 {
     [Fact]
-    public void TestSoundConverter()
+    public void TestMeshes()
     {
-        var path = EnvVariables.GameDirectoryPath;
-
-        var soundConverter = new SoundConverter();
-        var tempTargetPath = Directory.CreateTempSubdirectory("Sound");
-
-        soundConverter.Convert(path, tempTargetPath.FullName);
-
-        var tempTargetPathSound = new DirectoryInfo(Path.Combine(tempTargetPath.FullName, "Sound"));
-
-        Assert.True(tempTargetPathSound.Exists);
-        Assert.True(tempTargetPathSound.GetFiles("*.wav", SearchOption.AllDirectories).Length > 0);
-
-        tempTargetPath.Delete(true);
+        PipelineBuilder<BgfAsset>
+            .Create()
+            .DecodeWith<BgfDecoder, BgfStruct>()
+            .Build()
+            .Execute(GameAssets.OfType<BgfAsset>().FromGameInstallation(EnvVariables.GameDirectoryPath));
     }
 
     [Fact]
-    public void TestGraphicsConverter()
+    public void TestSounds()
     {
-        var path = EnvVariables.GameDirectoryPath;
+        var outputPath = Path.Combine("output", "sounds");
 
-        var graphicsConverter = new GraphicsConverter();
-        var tempTargetPath = Directory.CreateTempSubdirectory("Graphics");
+        PipelineBuilder<SbfAsset>
+            .Create()
+            .DecodeWith<SbfDecoder, SbfStruct>()
+            .ConvertWith<SbfConverter, SbfStruct, List<IFileExport>>()
+            .WriteTo(outputPath)
+            .Build()
+            .Execute(GameAssets.OfType<SbfAsset>().FromGameInstallation(EnvVariables.GameDirectoryPath));
 
-        graphicsConverter.Convert(path, tempTargetPath.FullName);
-
-        var tempTargetPathGraphics = new DirectoryInfo(Path.Combine(tempTargetPath.FullName, "Graphics"));
-
-        Assert.True(tempTargetPathGraphics.Exists);
-        Assert.True(tempTargetPathGraphics.GetFiles("*.png", SearchOption.AllDirectories).Length > 0);
-
-        tempTargetPath.Delete(true);
+        Assert.True(Directory.GetFiles(outputPath, "*.wav", SearchOption.AllDirectories).Length > 0);
     }
 
     [Fact]
-    public void TestAgebConverter()
+    public void TestGraphics()
     {
-        var path = EnvVariables.GameDirectoryPath;
-        var agebConverter = new AgebConverter();
-        var tempTargetPath = Directory.CreateTempSubdirectory("Ageb");
+        var outputPath = Path.Combine("output", "graphics");
 
-        agebConverter.Convert(path, tempTargetPath.FullName);
+        PipelineBuilder<GfxAsset>
+            .Create()
+            .DecodeWith<GfxDecoder, GfxStruct>()
+            .ConvertWith<GfxConverter, GfxStruct, List<IFileExport>>()
+            .WriteTo(outputPath)
+            .Build()
+            .Execute(GameAssets.OfType<GfxAsset>().FromGameInstallation(EnvVariables.GameDirectoryPath));
 
-        Assert.True(tempTargetPath.Exists);
-        Assert.True(tempTargetPath.GetFiles("*.json", SearchOption.AllDirectories).Length > 0);
+        Assert.True(Directory.GetFiles(outputPath, "*.png", SearchOption.AllDirectories).Length > 0);
     }
 
     [Fact]
-    public void TestAobjConverter()
+    public void TestAgeb()
     {
-        var path = EnvVariables.GameDirectoryPath;
-        var aobjConverter = new AobjConverter();
-        var tempTargetPath = Directory.CreateTempSubdirectory("Aobj");
+        var outputPath = Path.Combine("output", "ageb");
 
-        aobjConverter.Convert(path, tempTargetPath.FullName);
+        PipelineBuilder<AgebAsset>
+            .Create()
+            .DecodeWith<AgebDecoder, AgebStruct>()
+            .WriteTo(outputPath)
+            .Build()
+            .Execute(GameAssets.OfType<AgebAsset>().FromGameInstallation(EnvVariables.GameDirectoryPath));
 
-        Assert.True(tempTargetPath.Exists);
-        Assert.True(tempTargetPath.GetFiles("*.json", SearchOption.AllDirectories).Length > 0);
+        Assert.True(Directory.GetFiles(outputPath, "*.json", SearchOption.AllDirectories).Length > 0);
+    }
+
+    [Fact]
+    public void TestAobj()
+    {
+        var outputPath = Path.Combine("output", "aobj");
+
+        PipelineBuilder<AobjAsset>
+            .Create()
+            .DecodeWith<AobjDecoder, AobjStruct>()
+            .WriteTo(outputPath)
+            .Build()
+            .Execute(GameAssets.OfType<AobjAsset>().FromGameInstallation(EnvVariables.GameDirectoryPath));
+
+        Assert.True(Directory.GetFiles(outputPath, "*.json", SearchOption.AllDirectories).Length > 0);
     }
 }
