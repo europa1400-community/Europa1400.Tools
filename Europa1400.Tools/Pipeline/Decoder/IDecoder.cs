@@ -1,10 +1,12 @@
+using System.Threading;
+using System.Threading.Tasks;
 using Europa1400.Tools.Pipeline.Assets;
 
 namespace Europa1400.Tools.Pipeline.Decoder
 {
-    public interface IDecoder<in TAsset, out TDecoded>
+    public interface IDecoder<in TAsset, TDecoded>
         where TAsset : IGameAsset
     {
-        TDecoded Decode(TAsset asset);
+        Task<TDecoded> DecodeAsync(TAsset asset, CancellationToken cancellationToken = default);
     }
 }

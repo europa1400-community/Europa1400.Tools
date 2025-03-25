@@ -1,46 +1,66 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Europa1400.Tools.Pipeline.Assets;
 
 namespace Europa1400.Tools.Pipeline
 {
     public class Pipeline<TAsset> where TAsset : IGameAsset
     {
-        private readonly Func<TAsset, object>? decode;
-        private Func<object, object>? convert;
-        private Action<object, TAsset>? write;
+        private readonly Func<object, CancellationToken, Task<object?>>? _convert;
+        private readonly Func<TAsset, CancellationToken, Task<object?>>? _decode;
+        private readonly Func<object, TAsset, CancellationToken, Task>? _write;
 
-        public Pipeline(Func<TAsset, object>? decode, Func<object, object>? convert, Action<object, TAsset>? write)
+        public Pipeline(
+            Func<TAsset, CancellationToken, Task<object?>>? decode,
+            Func<object, CancellationToken, Task<object?>>? convert,
+            Func<object, TAsset, CancellationToken, Task>? write)
         {
-            this.convert = convert;
-            this.decode = decode;
-            this.write = write;
+            _decode = decode;
+            _convert = convert;
+            _write = write;
         }
-        
-        public void Execute(AssetSelection<TAsset> selection)
+
+        public async Task ExecuteAsync(
+            AssetSelection<TAsset> selection,
+            IProgress<PipelineProgress>? progress = null,
+            CancellationToken cancellationToken = default)
         {
+            var total = selection.Assets.Count;
+            var current = 0;
+
             foreach (var asset in selection.Assets)
             {
-                object current = asset;
+                object stage = asset;
 
-                if (decode != null)
-                    current = decode(asset);
+                if (_decode != null)
+                    stage = await _decode(asset, cancellationToken);
 
-                if (convert != null)
-                    current = convert(current);
+                if (_convert != null)
+                    stage = await _convert(stage, cancellationToken);
 
-                write?.Invoke(current, asset);
+                if (_write != null)
+                    await _write(stage, asset, cancellationToken);
+
+                current++;
+                progress?.Report(new PipelineProgress
+                {
+                    TotalSteps = total,
+                    CurrentStep = current,
+                    Message = $"Processed {asset.FilePath}"
+                });
             }
         }
 
-        public void Execute(TAsset asset)
+        public Task ExecuteAsync(TAsset asset)
         {
-            Execute(new AssetSelection<TAsset>(new List<TAsset> { asset }.AsReadOnly()));
+            return ExecuteAsync(new AssetSelection<TAsset>(new List<TAsset> { asset }.AsReadOnly()));
         }
 
-        public void Execute(IEnumerable<TAsset> assets)
+        public Task ExecuteAsync(IEnumerable<TAsset> assets)
         {
-            Execute(new AssetSelection<TAsset>(assets));
+            return ExecuteAsync(new AssetSelection<TAsset>(assets));
         }
     }
 }

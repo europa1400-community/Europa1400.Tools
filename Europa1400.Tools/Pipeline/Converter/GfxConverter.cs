@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using Europa1400.Tools.Pipeline.Output;
 using Europa1400.Tools.Structs.Gfx;
 using SkiaSharp;
@@ -9,12 +11,14 @@ namespace Europa1400.Tools.Pipeline.Converter
 {
     public class GfxConverter : IConverter<GfxStruct, List<IFileExport>>
     {
-        public List<IFileExport> Convert(GfxStruct input)
+        public Task<List<IFileExport>> ConvertAsync(GfxStruct input, CancellationToken cancellationToken = default)
         {
             var exports = new List<IFileExport>();
 
             foreach (var shapebankDef in input.ShapebankDefinitions)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 var shapebank = shapebankDef.Shapebank;
                 if (shapebank == null)
                     continue;
@@ -23,11 +27,14 @@ namespace Europa1400.Tools.Pipeline.Converter
 
                 for (var i = 0; i < shapebank.Graphics.Length; i++)
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
+
                     var graphic = shapebank.Graphics[i];
                     var image = ConvertGraphic(graphic);
 
                     using var ms = new MemoryStream();
                     image.Encode(ms, SKEncodedImageFormat.Png, 100);
+                    ms.Seek(0, SeekOrigin.Begin);
 
                     var fileName = $"{baseName}_{i}.png";
                     var filePath = Path.Combine(baseName, fileName).Replace('\\', '/');
@@ -40,7 +47,7 @@ namespace Europa1400.Tools.Pipeline.Converter
                 }
             }
 
-            return exports;
+            return Task.FromResult(exports);
         }
 
         private SKBitmap ConvertGraphic(GraphicStruct graphic)

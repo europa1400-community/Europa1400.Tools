@@ -1,5 +1,6 @@
 using System;
-using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Europa1400.Tools.Pipeline.Assets;
 using Europa1400.Tools.Pipeline.Converter;
 using Europa1400.Tools.Pipeline.Decoder;
@@ -9,9 +10,9 @@ namespace Europa1400.Tools.Pipeline
 {
     public class PipelineBuilder<TAsset> where TAsset : IGameAsset
     {
-        private Func<object, object>? _convert;
-        private Func<TAsset, object>? _decode;
-        private Action<object, TAsset>? _write;
+        private Func<object, CancellationToken, Task<object?>>? _convert;
+        private Func<TAsset, CancellationToken, Task<object?>>? _decode;
+        private Func<object, TAsset, CancellationToken, Task>? _write;
 
         public static PipelineBuilder<TAsset> Create()
         {
@@ -22,7 +23,7 @@ namespace Europa1400.Tools.Pipeline
             where TDecoder : IDecoder<TAsset, TDecoded>, new()
         {
             var decoder = new TDecoder();
-            _decode = asset => decoder.Decode(asset)!;
+            _decode = async (asset, ct) => await decoder.DecodeAsync(asset, ct);
             return this;
         }
 
@@ -30,41 +31,45 @@ namespace Europa1400.Tools.Pipeline
             where TConverter : IConverter<TInput, TOutput>, new()
         {
             var converter = new TConverter();
-            _convert = input => converter.Convert((TInput)input)!;
+            _convert = async (input, ct) => await converter.ConvertAsync((TInput)input, ct);
             return this;
         }
 
-        public PipelineBuilder<TAsset> WriteTo(string outputPath)
+        public PipelineBuilder<TAsset> WriteWith<THandler, TOutput, TOptions>(TOptions options)
+            where THandler : IOutputHandler<TOutput, TOptions>, new()
+            where TOptions : OutputHandlerOptions
         {
-            if (_convert != null)
+            var handler = new THandler();
+
+            _write = async (output, asset, ct) =>
             {
-                _write = (output, asset) =>
-                {
-                    if (output is List<IFileExport> files)
-                    {
-                        var writer = new FileExportOutputHandler(outputPath);
-                        writer.Write(files, asset);
-                    }
-                    else
-                    {
-                        throw new InvalidOperationException("WriteTo expected List<IFileExport> as output.");
-                    }
-                };
-            }
-            else if (_decode != null)
+                if (output is TOutput typed)
+                    await handler.WriteAsync(typed, asset, options, ct);
+                else
+                    throw new InvalidOperationException($"Expected output of type {typeof(TOutput).Name}.");
+            };
+
+            return this;
+        }
+
+        public PipelineBuilder<TAsset> WriteWith<THandler, TOutput>()
+            where THandler : IOutputHandler<TOutput, OutputHandlerOptions>, new()
+        {
+            return WriteWith<THandler, TOutput>(new OutputHandlerOptions());
+        }
+
+        public PipelineBuilder<TAsset> WriteWith<THandler, TOutput>(OutputHandlerOptions options)
+            where THandler : IOutputHandler<TOutput, OutputHandlerOptions>, new()
+        {
+            var handler = new THandler();
+
+            _write = async (output, asset, ct) =>
             {
-                _write = (decoded, asset) =>
-                {
-                    var handlerType = typeof(ObjectSerializationOutputHandler<>).MakeGenericType(decoded.GetType());
-                    dynamic handler = Activator.CreateInstance(handlerType, outputPath);
-                    handler.Write((dynamic)decoded, asset);
-                };
-            }
-            else
-            {
-                var copier = new RawFileCopyOutputHandler(outputPath);
-                _write = (input, asset) => copier.Write((IGameAsset)input, asset);
-            }
+                if (output is TOutput typed)
+                    await handler.WriteAsync(typed, asset, options, ct);
+                else
+                    throw new InvalidOperationException($"Expected output of type {typeof(TOutput).Name}.");
+            };
 
             return this;
         }

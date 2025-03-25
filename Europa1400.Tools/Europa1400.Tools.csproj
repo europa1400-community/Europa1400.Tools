@@ -6,12 +6,11 @@
         <Authors>europa1400-community</Authors>
         <Company>europa1400-community</Company>
         <License>MIT</License>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
         <Description>DotNet class library with tools for the Europa 1400: The Guild / Die Gilde game. Can decode, convert and export game assets.</Description>
         <PackageProjectUrl>https://github.com/europa1400-community/Europa1400.Tools</PackageProjectUrl>
         <RepositoryUrl>https://github.com/europa1400-community/Europa1400.Tools</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <TargetFrameworks>net8.0;netstandard2.1</TargetFrameworks>
+        <TargetFramework>netstandard2.1</TargetFramework>
         <ImplicitUsings>disable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -23,6 +22,8 @@
         <PackageReference Include="NAudio.Core" Version="2.2.1"/>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
         <PackageReference Include="SkiaSharp" Version="3.116.1"/>
-        <None Include="README.md" Pack="true" PackagePath="\"/>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>Europa1400.Tools.Tests</_Parameter1>
+        </AssemblyAttribute>
     </ItemGroup>
 </Project>

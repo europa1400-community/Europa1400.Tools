@@ -12,10 +12,11 @@ namespace Europa1400.Tools.Pipeline
         static AssetDiscovererRegistry()
         {
             Register(new AgebAssetDiscoverer());
-            Register(new AObjAssetDiscoverer());
+            Register(new AobjAssetDiscoverer());
             Register(new SbfAssetDiscoverer());
             Register(new BgfAssetDiscoverer());
             Register(new GfxAssetDiscoverer());
+            Register(new DummyAssetDiscoverer());
         }
 
         public static void Register<TAsset>(IAssetDiscoverer<TAsset> discoverer) where TAsset : IGameAsset
