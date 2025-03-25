@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Europa1400.Tools.Pipeline.Output;
 using Europa1400.Tools.Structs.Sbf;
 using MP3Sharp;
@@ -11,16 +13,20 @@ namespace Europa1400.Tools.Pipeline.Converter
 {
     public class SbfConverter : IConverter<SbfStruct, List<IFileExport>>
     {
-        public List<IFileExport> Convert(SbfStruct input)
+        public Task<List<IFileExport>> ConvertAsync(SbfStruct input, CancellationToken cancellationToken = default)
         {
             var files = new List<IFileExport>();
 
             foreach (var soundbank in input.Soundbanks)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 var bankName = Sanitize(soundbank.SoundbankDefinition.Name);
 
                 for (var i = 0; i < soundbank.Sounds.Length; i++)
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
+
                     var sound = soundbank.Sounds[i];
                     var def = soundbank.SoundDefinitions[i];
 
@@ -41,7 +47,7 @@ namespace Europa1400.Tools.Pipeline.Converter
                 }
             }
 
-            return files;
+            return Task.FromResult(files);
         }
 
         private static string Sanitize(string name)
@@ -52,8 +58,11 @@ namespace Europa1400.Tools.Pipeline.Converter
         private static byte[] ConvertMp3ToWav(byte[] mp3Bytes)
         {
             using var mp3Stream = new MP3Stream(new MemoryStream(mp3Bytes));
-            using var waveStream =
-                new RawSourceWaveStream(mp3Stream, new WaveFormat(mp3Stream.Frequency, 16, mp3Stream.ChannelCount));
+            using var waveStream = new RawSourceWaveStream(
+                mp3Stream,
+                new WaveFormat(mp3Stream.Frequency, 16, mp3Stream.ChannelCount)
+            );
+
             using var memoryStream = new MemoryStream();
             WaveFileWriter.WriteWavFileToStream(memoryStream, waveStream);
             return memoryStream.ToArray();

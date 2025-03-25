@@ -1,28 +1,26 @@
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using Europa1400.Tools.Pipeline.Assets;
 using Newtonsoft.Json;
 
 namespace Europa1400.Tools.Pipeline.Output
 {
-    public class ObjectSerializationOutputHandler<T> : IOutputHandler<T>
+    public class ObjectSerializationOutputHandler<T> : IOutputHandler<T, OutputHandlerOptions>
     {
-        private readonly string outputRoot;
-
-        public ObjectSerializationOutputHandler(string outputRoot)
-        {
-            this.outputRoot = outputRoot;
-        }
-
-        public void Write(T output, IGameAsset asset)
+        public Task WriteAsync(T output, IGameAsset asset, OutputHandlerOptions options,
+            CancellationToken cancellationToken = default)
         {
             var fileName = Path.GetFileNameWithoutExtension(asset.FilePath) + ".json";
-            var fullPath = Path.Combine(outputRoot, fileName);
+            var fullPath = Path.Combine(options.OutputRoot, fileName);
 
             Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
-            
-            var json = JsonConvert.SerializeObject(output, Formatting.Indented);
 
-            File.WriteAllText(fullPath, json);
+            if (!options.OverwriteExisting && File.Exists(fullPath))
+                return Task.CompletedTask;
+
+            var json = JsonConvert.SerializeObject(output, Formatting.Indented);
+            return File.WriteAllTextAsync(fullPath, json, cancellationToken);
         }
     }
 }

@@ -5,13 +5,8 @@ using Europa1400.Tools.Pipeline.Assets;
 
 namespace Europa1400.Tools.Pipeline.Discoverer
 {
-    public class AObjAssetDiscoverer : IAssetDiscoverer<AobjAsset>
+    internal class AobjAssetDiscoverer : IAssetDiscoverer<AobjAsset>
     {
-        static AObjAssetDiscoverer()
-        {
-            AssetDiscovererRegistry.Register(new AObjAssetDiscoverer());
-        }
-
         public IEnumerable<AobjAsset> DiscoverAllFromGame(string gamePath)
         {
             var file = Path.Combine(gamePath, "Data", "A_Obj.dat");

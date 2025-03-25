@@ -14,74 +14,104 @@ namespace Europa1400.Tools.Tests;
 
 public class Europa1400Test(ITestOutputHelper testOutputHelper)
 {
-    [Fact(Skip = "This test does not work yet.")]
-    public void TestMeshes()
+    [Fact]
+    public async Task TestProgress()
     {
-        PipelineBuilder<BgfAsset>
+        var progressUpdates = new List<PipelineProgress>();
+
+        var progress = new Progress<PipelineProgress>(p =>
+        {
+            progressUpdates.Add(p);
+            testOutputHelper.WriteLine($"[{p.CurrentStep}/{p.TotalSteps}] {p.Percent:P0} - {p.Message}");
+        });
+
+        var pipeline = PipelineBuilder<DummyAsset>
+            .Create()
+            .DecodeWith<DummyDecoder, object>()
+            .ConvertWith<DummyConverter, object, List<IFileExport>>()
+            .WriteWith<DummyOutputHandler, List<IFileExport>>()
+            .Build();
+
+        await pipeline.ExecuteAsync(
+            GameAssets.OfType<DummyAsset>().FromGameInstallation(EnvVariables.GameDirectoryPath),
+            progress
+        );
+
+        Assert.NotEmpty(progressUpdates);
+
+        var final = progressUpdates[^1];
+        Assert.Equal(final.TotalSteps, final.CurrentStep);
+        Assert.Equal(1.0, final.Percent, 2);
+    }
+
+    [Fact(Skip = "This test does not work yet.")]
+    public async Task TestMeshes()
+    {
+        await PipelineBuilder<BgfAsset>
             .Create()
             .DecodeWith<BgfDecoder, BgfStruct>()
             .Build()
-            .Execute(GameAssets.OfType<BgfAsset>().FromGameInstallation(EnvVariables.GameDirectoryPath));
+            .ExecuteAsync(GameAssets.OfType<BgfAsset>().FromGameInstallation(EnvVariables.GameDirectoryPath));
     }
 
     [Fact]
-    public void TestSounds()
+    public async Task TestSounds()
     {
         var outputPath = Path.Combine("output", "sounds");
 
-        PipelineBuilder<SbfAsset>
+        await PipelineBuilder<SbfAsset>
             .Create()
             .DecodeWith<SbfDecoder, SbfStruct>()
             .ConvertWith<SbfConverter, SbfStruct, List<IFileExport>>()
-            .WriteTo(outputPath)
+            .WriteWith<FileExportOutputHandler, List<IFileExport>>(new OutputHandlerOptions { OutputRoot = outputPath })
             .Build()
-            .Execute(GameAssets.OfType<SbfAsset>().FromGameInstallation(EnvVariables.GameDirectoryPath));
+            .ExecuteAsync(GameAssets.OfType<SbfAsset>().FromGameInstallation(EnvVariables.GameDirectoryPath));
 
         Assert.True(Directory.GetFiles(outputPath, "*.wav", SearchOption.AllDirectories).Length > 0);
     }
 
     [Fact]
-    public void TestGraphics()
+    public async Task TestGraphics()
     {
         var outputPath = Path.Combine("output", "graphics");
 
-        PipelineBuilder<GfxAsset>
+        await PipelineBuilder<GfxAsset>
             .Create()
             .DecodeWith<GfxDecoder, GfxStruct>()
             .ConvertWith<GfxConverter, GfxStruct, List<IFileExport>>()
-            .WriteTo(outputPath)
+            .WriteWith<FileExportOutputHandler, List<IFileExport>>(new OutputHandlerOptions { OutputRoot = outputPath })
             .Build()
-            .Execute(GameAssets.OfType<GfxAsset>().FromGameInstallation(EnvVariables.GameDirectoryPath));
+            .ExecuteAsync(GameAssets.OfType<GfxAsset>().FromGameInstallation(EnvVariables.GameDirectoryPath));
 
         Assert.True(Directory.GetFiles(outputPath, "*.png", SearchOption.AllDirectories).Length > 0);
     }
 
     [Fact]
-    public void TestAgeb()
+    public async Task TestAgeb()
     {
         var outputPath = Path.Combine("output", "ageb");
 
-        PipelineBuilder<AgebAsset>
+        await PipelineBuilder<AgebAsset>
             .Create()
             .DecodeWith<AgebDecoder, AgebStruct>()
-            .WriteTo(outputPath)
+            .WriteWith<FileExportOutputHandler, List<IFileExport>>(new OutputHandlerOptions { OutputRoot = outputPath })
             .Build()
-            .Execute(GameAssets.OfType<AgebAsset>().FromGameInstallation(EnvVariables.GameDirectoryPath));
+            .ExecuteAsync(GameAssets.OfType<AgebAsset>().FromGameInstallation(EnvVariables.GameDirectoryPath));
 
         Assert.True(Directory.GetFiles(outputPath, "*.json", SearchOption.AllDirectories).Length > 0);
     }
 
     [Fact]
-    public void TestAobj()
+    public async Task TestAobj()
     {
         var outputPath = Path.Combine("output", "aobj");
 
-        PipelineBuilder<AobjAsset>
+        await PipelineBuilder<AobjAsset>
             .Create()
             .DecodeWith<AobjDecoder, AobjStruct>()
-            .WriteTo(outputPath)
+            .WriteWith<FileExportOutputHandler, List<IFileExport>>(new OutputHandlerOptions { OutputRoot = outputPath })
             .Build()
-            .Execute(GameAssets.OfType<AobjAsset>().FromGameInstallation(EnvVariables.GameDirectoryPath));
+            .ExecuteAsync(GameAssets.OfType<AobjAsset>().FromGameInstallation(EnvVariables.GameDirectoryPath));
 
         Assert.True(Directory.GetFiles(outputPath, "*.json", SearchOption.AllDirectories).Length > 0);
     }

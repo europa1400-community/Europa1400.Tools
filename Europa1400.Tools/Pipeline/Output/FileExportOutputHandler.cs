@@ -1,30 +1,30 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using Europa1400.Tools.Pipeline.Assets;
 
 namespace Europa1400.Tools.Pipeline.Output
 {
-    public class FileExportOutputHandler: IOutputHandler<List<IFileExport>>
+    public class FileExportOutputHandler : IOutputHandler<List<IFileExport>, OutputHandlerOptions>
     {
-        private readonly string outputRoot;
-
-        public FileExportOutputHandler(string outputRoot) 
+        public Task WriteAsync(List<IFileExport> files, IGameAsset asset, OutputHandlerOptions options,
+            CancellationToken cancellationToken = default)
         {
-            this.outputRoot = outputRoot;
-        }
-        
-        public void Write(List<IFileExport> output, IGameAsset asset)
-        {
-            foreach (var file in output)
+            foreach (var file in files)
             {
-                var fullPath = Path.Combine(outputRoot, file.FilePath);
-                var directory = Path.GetDirectoryName(fullPath);
+                cancellationToken.ThrowIfCancellationRequested();
 
-                if (!string.IsNullOrEmpty(directory))
-                    Directory.CreateDirectory(directory);
+                var fullPath = Path.Combine(options.OutputRoot, file.FilePath);
+                Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
+
+                if (!options.OverwriteExisting && File.Exists(fullPath))
+                    continue;
 
                 File.WriteAllBytes(fullPath, file.Content);
             }
+
+            return Task.CompletedTask;
         }
     }
 }
