@@ -8,12 +8,13 @@ namespace Europa1400.Tools.Pipeline.Discoverer
     {
         public IEnumerable<AgebAsset> DiscoverAllFromGame(string gamePath)
         {
-            var filePath = Path.Combine(gamePath, "Data", "A_Geb.dat");
+            var relativePath = Path.Combine("Data", "A_Geb.dat");
+            var filePath = Path.Combine(gamePath, relativePath);
 
             if (!File.Exists(filePath))
                 throw new FileNotFoundException("Ageb file not found", filePath);
 
-            return new List<AgebAsset> { new AgebAsset { FilePath = filePath } };
+            return new List<AgebAsset> { new AgebAsset(filePath, relativePath) };
         }
 
         public AgebAsset WrapSingleFile(string filePath)
@@ -21,7 +22,7 @@ namespace Europa1400.Tools.Pipeline.Discoverer
             if (!File.Exists(filePath))
                 throw new FileNotFoundException("Ageb file not found", filePath);
 
-            return new AgebAsset { FilePath = filePath };
+            return new AgebAsset(Path.GetFullPath(filePath), Path.GetFileName(filePath));
         }
     }
 }

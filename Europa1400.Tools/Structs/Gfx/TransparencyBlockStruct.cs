@@ -5,9 +5,9 @@ namespace Europa1400.Tools.Structs.Gfx
 {
     public class TransparencyBlockStruct
     {
-        public uint Size { get; private set; }
-        public uint PixelCount { get; private set; }
-        public byte[] Data { get; private set; }
+        public uint Size { get; set; }
+        public uint PixelCount { get; set; }
+        public byte[] Data { get; set; }
 
         public static TransparencyBlockStruct FromBytes(BinaryReader br)
         {

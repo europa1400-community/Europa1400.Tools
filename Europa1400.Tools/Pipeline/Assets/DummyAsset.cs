@@ -1,7 +1,11 @@
+using System;
+
 namespace Europa1400.Tools.Pipeline.Assets
 {
-    internal class DummyAsset : IGameAsset
+    internal class DummyAsset : GameAsset
     {
-        public string FilePath => string.Empty;
+        public DummyAsset() : base(string.Empty, string.Empty)
+        {
+        }
     }
 }

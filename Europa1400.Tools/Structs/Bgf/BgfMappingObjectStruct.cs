@@ -5,16 +5,16 @@ namespace Europa1400.Tools.Structs.Bgf
 {
     public class BgfMappingObjectStruct
     {
-        public byte Unknown1 { get; private set; }
-        public ushort Unknown2 { get; private set; }
-        public ushort Unknown3 { get; private set; }
-        public uint TextureCount { get; private set; }
-        public uint VertexMappingCount { get; private set; }
-        public uint PolygonMappingCount { get; private set; }
-        public BgfVertexMapping[] VertexMappings { get; private set; }
-        public BgfVertexMapping[] BoxVertexMappings { get; private set; }
-        public float Unknown4 { get; private set; }
-        public BgfPolygonMappingStruct[] PolygonMappings { get; private set; }
+        public byte Unknown1 { get; set; }
+        public ushort Unknown2 { get; set; }
+        public ushort Unknown3 { get; set; }
+        public uint TextureCount { get; set; }
+        public uint VertexMappingCount { get; set; }
+        public uint PolygonMappingCount { get; set; }
+        public BgfVertexMapping[] VertexMappings { get; set; }
+        public BgfVertexMapping[] BoxVertexMappings { get; set; }
+        public float Unknown4 { get; set; }
+        public BgfPolygonMappingStruct[] PolygonMappings { get; set; }
 
         public static BgfMappingObjectStruct FromBytes(BinaryReader br)
         {

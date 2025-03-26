@@ -4,10 +4,12 @@ using Europa1400.Tools.Pipeline.Assets;
 
 namespace Europa1400.Tools.Pipeline.Output
 {
-    public interface IOutputHandler<in TOutput, in TOptions>
-        where TOptions : OutputHandlerOptions
+    public interface IOutputHandler
     {
-        Task WriteAsync(TOutput output, IGameAsset asset, TOptions options,
+        Task WriteAsync(
+            object output,
+            GameAsset asset,
+            OutputHandlerOptions options,
             CancellationToken cancellationToken = default);
     }
 }

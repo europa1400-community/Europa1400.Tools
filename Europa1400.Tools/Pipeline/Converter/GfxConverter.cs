@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Europa1400.Tools.Pipeline.Output;
@@ -9,13 +10,25 @@ using SkiaSharp;
 
 namespace Europa1400.Tools.Pipeline.Converter
 {
-    public class GfxConverter : IConverter<GfxStruct, List<IFileExport>>
+    public class GfxConverter : IConverter
     {
-        public Task<List<IFileExport>> ConvertAsync(GfxStruct input, CancellationToken cancellationToken = default)
+        public int EstimateSteps(object input)
         {
+            if (!(input is GfxStruct gfxStruct))
+                throw new ArgumentException("Input is not of type GfxInput");
+
+            return gfxStruct.ShapebankDefinitions.Sum(s => s.Shapebank?.Graphics.Length ?? 0);
+        }
+
+        public Task<IEnumerable<IFileExport>> ConvertAsync(object input, PipelineProgress pipelineProgress,
+            IProgress<PipelineProgress>? progress, CancellationToken cancellationToken = default)
+        {
+            if (!(input is GfxStruct gfxStruct))
+                throw new ArgumentException("Input is not of type GfxInput");
+
             var exports = new List<IFileExport>();
 
-            foreach (var shapebankDef in input.ShapebankDefinitions)
+            foreach (var shapebankDef in gfxStruct.ShapebankDefinitions)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -27,6 +40,8 @@ namespace Europa1400.Tools.Pipeline.Converter
 
                 for (var i = 0; i < shapebank.Graphics.Length; i++)
                 {
+                    pipelineProgress.FileName = Path.Combine(baseName, $"{baseName}_{i}.png");
+                    progress?.Report(pipelineProgress);
                     cancellationToken.ThrowIfCancellationRequested();
 
                     var graphic = shapebank.Graphics[i];
@@ -44,10 +59,13 @@ namespace Europa1400.Tools.Pipeline.Converter
                         FilePath = filePath,
                         Content = ms.ToArray()
                     });
+
+                    pipelineProgress.Current += 1;
+                    progress?.Report(pipelineProgress);
                 }
             }
 
-            return Task.FromResult(exports);
+            return Task.FromResult(exports.AsEnumerable());
         }
 
         private SKBitmap ConvertGraphic(GraphicStruct graphic)

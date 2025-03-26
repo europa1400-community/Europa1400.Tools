@@ -4,9 +4,9 @@ namespace Europa1400.Tools.Structs.Sbf
 {
     public class SoundbankHeaderStruct
     {
-        public uint SoundCount { get; private set; }
-        public uint Unknown1 { get; private set; }
-        public uint Unknown2 { get; private set; }
+        public uint SoundCount { get; set; }
+        public uint Unknown1 { get; set; }
+        public uint Unknown2 { get; set; }
 
         public static SoundbankHeaderStruct FromBytes(BinaryReader br)
         {

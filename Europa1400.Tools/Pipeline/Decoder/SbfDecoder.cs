@@ -6,13 +6,13 @@ using Europa1400.Tools.Structs.Sbf;
 
 namespace Europa1400.Tools.Pipeline.Decoder
 {
-    public class SbfDecoder : IDecoder<SbfAsset, SbfStruct>
+    public class SbfDecoder : IDecoder
     {
-        public Task<SbfStruct> DecodeAsync(SbfAsset asset, CancellationToken cancellationToken = default)
+        public Task<object> DecodeAsync(GameAsset asset, CancellationToken cancellationToken = default)
         {
             using var stream = File.OpenRead(asset.FilePath);
             using var reader = new BinaryReader(stream);
-            return Task.FromResult(SbfStruct.FromBytes(reader));
+            return Task.FromResult<object>(SbfStruct.FromBytes(reader));
         }
     }
 }

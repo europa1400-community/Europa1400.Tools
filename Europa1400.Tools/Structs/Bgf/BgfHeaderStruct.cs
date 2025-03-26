@@ -5,12 +5,12 @@ namespace Europa1400.Tools.Structs.Bgf
 {
     public class BgfHeaderStruct
     {
-        public string Name { get; private set; }
-        public uint MappingAddress { get; private set; }
-        public byte Unknown1 { get; private set; }
-        public byte Unknown2 { get; private set; }
-        public uint? SkeletonCount { get; private set; }
-        public uint TextureCount { get; private set; }
+        public string Name { get; set; }
+        public uint MappingAddress { get; set; }
+        public byte Unknown1 { get; set; }
+        public byte Unknown2 { get; set; }
+        public uint? SkeletonCount { get; set; }
+        public uint TextureCount { get; set; }
 
         public static BgfHeaderStruct FromBytes(BinaryReader br)
         {

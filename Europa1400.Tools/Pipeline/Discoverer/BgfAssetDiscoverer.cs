@@ -18,11 +18,13 @@ namespace Europa1400.Tools.Pipeline.Discoverer
             if (!File.Exists(filePath))
                 throw new FileNotFoundException("BGF file not found", filePath);
 
-            return new BgfAsset
-            {
-                FilePath = Path.GetFullPath(filePath),
-                RelativePath = Path.GetFileName(filePath)
-            };
+            return new BgfAsset(
+                Path.GetFullPath(filePath),
+                Path.GetFileName(filePath),
+                null,
+                null,
+                null
+            );
         }
 
         public IEnumerable<BgfAsset> DiscoverAllFromGame(string gamePath, BgfDiscoveryOptions options)
@@ -39,11 +41,13 @@ namespace Europa1400.Tools.Pipeline.Discoverer
             var bgfFiles = allFiles.Where(f => Path.GetExtension(f).Equals(".bgf", StringComparison.OrdinalIgnoreCase));
 
             foreach (var bgfFile in bgfFiles)
-                yield return new BgfAsset
-                {
-                    FilePath = bgfFile,
-                    RelativePath = Path.GetRelativePath(extractedRoot, bgfFile).Replace('\\', '/')
-                };
+                yield return new BgfAsset(
+                    bgfFile,
+                    Path.GetRelativePath(extractedRoot, bgfFile).Replace('\\', '/'),
+                    null,
+                    null,
+                    null
+                );
         }
     }
 }

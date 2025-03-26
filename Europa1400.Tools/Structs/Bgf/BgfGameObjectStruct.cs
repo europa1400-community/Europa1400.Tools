@@ -5,10 +5,10 @@ namespace Europa1400.Tools.Structs.Bgf
 {
     public class BgfGameObjectStruct
     {
-        public string Name { get; private set; }
-        public BgfModelStruct? Model { get; private set; }
-        public uint? SkeletonCount { get; private set; }
-        public BgfSkeletonStruct[]? Skeletons { get; private set; }
+        public string Name { get; set; }
+        public BgfModelStruct? Model { get; set; }
+        public uint? SkeletonCount { get; set; }
+        public BgfSkeletonStruct[]? Skeletons { get; set; }
 
         public static BgfGameObjectStruct FromBytes(BinaryReader br)
         {

@@ -5,7 +5,7 @@ namespace Europa1400.Tools.Structs.Bgf
 {
     public class BgfFooterStruct
     {
-        public BgfTextureNameStruct[] TextureNames { get; private set; }
+        public BgfTextureNameStruct[] TextureNames { get; set; }
 
         public static BgfFooterStruct FromBytes(BinaryReader br)
         {

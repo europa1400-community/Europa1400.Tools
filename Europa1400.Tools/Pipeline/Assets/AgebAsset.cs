@@ -1,7 +1,9 @@
 namespace Europa1400.Tools.Pipeline.Assets
 {
-    public class AgebAsset : IGameAsset
+    public class AgebAsset : GameAsset
     {
-        public string FilePath { get; set; }
+        public AgebAsset(string filePath, string relativePath) : base(filePath, relativePath)
+        {
+        }
     }
 }

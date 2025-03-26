@@ -11,13 +11,25 @@ using NAudio.Wave;
 
 namespace Europa1400.Tools.Pipeline.Converter
 {
-    public class SbfConverter : IConverter<SbfStruct, List<IFileExport>>
+    public class SbfConverter : IConverter
     {
-        public Task<List<IFileExport>> ConvertAsync(SbfStruct input, CancellationToken cancellationToken = default)
+        public int EstimateSteps(object input)
         {
+            if (!(input is SbfStruct sbfStruct))
+                throw new ArgumentException("Input is not of type SbfStruct");
+
+            return sbfStruct.Soundbanks.Sum(e => e.Sounds.Length);
+        }
+
+        public Task<IEnumerable<IFileExport>> ConvertAsync(object input, PipelineProgress pipelineProgress,
+            IProgress<PipelineProgress>? progress, CancellationToken cancellationToken = default)
+        {
+            if (!(input is SbfStruct sbfStruct))
+                throw new ArgumentException("Input is not of type SbfStruct");
+
             var files = new List<IFileExport>();
 
-            foreach (var soundbank in input.Soundbanks)
+            foreach (var soundbank in sbfStruct.Soundbanks)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -25,6 +37,8 @@ namespace Europa1400.Tools.Pipeline.Converter
 
                 for (var i = 0; i < soundbank.Sounds.Length; i++)
                 {
+                    pipelineProgress.FileName = Path.Combine($"{bankName}_{i:D2}.wav");
+                    progress?.Report(pipelineProgress);
                     cancellationToken.ThrowIfCancellationRequested();
 
                     var sound = soundbank.Sounds[i];
@@ -44,10 +58,13 @@ namespace Europa1400.Tools.Pipeline.Converter
                         FilePath = fileName,
                         Content = wavBytes
                     });
+
+                    pipelineProgress.Current += 1;
+                    progress?.Report(pipelineProgress);
                 }
             }
 
-            return Task.FromResult(files);
+            return Task.FromResult(files.AsEnumerable());
         }
 
         private static string Sanitize(string name)

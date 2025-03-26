@@ -5,10 +5,10 @@ namespace Europa1400.Tools.Structs.Bgf
 {
     public class BgfSkeletonStruct
     {
-        public string Name { get; private set; }
-        public Vector3Struct Vector1 { get; private set; }
-        public byte Unknown1 { get; private set; }
-        public Vector3Struct Vector2 { get; private set; }
+        public string Name { get; set; }
+        public Vector3Struct Vector1 { get; set; }
+        public byte Unknown1 { get; set; }
+        public Vector3Struct Vector2 { get; set; }
 
         public static BgfSkeletonStruct FromBytes(BinaryReader br)
         {

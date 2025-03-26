@@ -1,22 +1,19 @@
 using System.Collections.Generic;
-using System.IO;
 
 namespace Europa1400.Tools.Pipeline.Assets
 {
-    public class BgfAsset : IGameAsset
+    public class BgfAsset : GameAsset
     {
-        private string? _relativePath;
-
-        public string RelativePath
+        public BgfAsset(string filePath, string relativePath, TxsAsset? txs, List<TextureAsset>? textures,
+            List<BafAsset>? animations) : base(filePath, relativePath)
         {
-            get => _relativePath ?? Path.GetFileName(FilePath);
-            set => _relativePath = value;
+            Txs = txs;
+            Textures = textures;
+            Animations = animations;
         }
 
         public TxsAsset? Txs { get; set; }
         public List<TextureAsset>? Textures { get; set; }
         public List<BafAsset>? Animations { get; set; }
-
-        public string FilePath { get; set; }
     }
 }

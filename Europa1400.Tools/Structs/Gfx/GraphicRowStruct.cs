@@ -5,8 +5,8 @@ namespace Europa1400.Tools.Structs.Gfx
 {
     public class GraphicRowStruct
     {
-        public uint BlockCount { get; private set; }
-        public TransparencyBlockStruct[] TransparencyBlocks { get; private set; }
+        public uint BlockCount { get; set; }
+        public TransparencyBlockStruct[] TransparencyBlocks { get; set; }
 
         public static GraphicRowStruct FromBytes(BinaryReader br)
         {

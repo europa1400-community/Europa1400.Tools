@@ -5,31 +5,31 @@ namespace Europa1400.Tools.Structs.Gfx
 {
     public class GraphicStruct
     {
-        public uint Size { get; private set; }
-        public ushort Unknown1 { get; private set; }
-        public ushort Width { get; private set; }
-        public ushort Unknown2 { get; private set; }
-        public ushort Height { get; private set; }
-        public ushort Unknown3 { get; private set; }
-        public ushort Unknown4 { get; private set; }
-        public ushort Unknown5 { get; private set; }
-        public ushort Width2 { get; private set; }
-        public ushort Height2 { get; private set; }
-        public ushort Unknown6 { get; private set; }
-        public ushort Unknown7 { get; private set; }
-        public ushort Unknown8 { get; private set; }
-        public ushort Unknown9 { get; private set; }
-        public ushort Unknown10 { get; private set; }
-        public ushort Unknown11 { get; private set; }
-        public ushort Unknown12 { get; private set; }
-        public ushort Unknown13 { get; private set; }
-        public uint Unknown14 { get; private set; }
-        public uint SizeWithoutFooter { get; private set; }
-        public uint Unknown15 { get; private set; }
+        public uint Size { get; set; }
+        public ushort Unknown1 { get; set; }
+        public ushort Width { get; set; }
+        public ushort Unknown2 { get; set; }
+        public ushort Height { get; set; }
+        public ushort Unknown3 { get; set; }
+        public ushort Unknown4 { get; set; }
+        public ushort Unknown5 { get; set; }
+        public ushort Width2 { get; set; }
+        public ushort Height2 { get; set; }
+        public ushort Unknown6 { get; set; }
+        public ushort Unknown7 { get; set; }
+        public ushort Unknown8 { get; set; }
+        public ushort Unknown9 { get; set; }
+        public ushort Unknown10 { get; set; }
+        public ushort Unknown11 { get; set; }
+        public ushort Unknown12 { get; set; }
+        public ushort Unknown13 { get; set; }
+        public uint Unknown14 { get; set; }
+        public uint SizeWithoutFooter { get; set; }
+        public uint Unknown15 { get; set; }
 
-        public byte[]? PixelData { get; private set; }
-        public GraphicRowStruct[]? GraphicRows { get; private set; }
-        public uint[]? FooterData { get; private set; }
+        public byte[]? PixelData { get; set; }
+        public GraphicRowStruct[]? GraphicRows { get; set; }
+        public uint[]? FooterData { get; set; }
 
         public static GraphicStruct FromBytes(BinaryReader br, long address)
         {

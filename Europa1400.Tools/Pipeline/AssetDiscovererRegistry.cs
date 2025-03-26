@@ -19,12 +19,12 @@ namespace Europa1400.Tools.Pipeline
             Register(new DummyAssetDiscoverer());
         }
 
-        public static void Register<TAsset>(IAssetDiscoverer<TAsset> discoverer) where TAsset : IGameAsset
+        public static void Register<TAsset>(IAssetDiscoverer<TAsset> discoverer) where TAsset : GameAsset
         {
             Discoverers[typeof(TAsset)] = discoverer;
         }
 
-        public static IAssetDiscoverer<TAsset> Get<TAsset>() where TAsset : IGameAsset
+        public static IAssetDiscoverer<TAsset> Get<TAsset>() where TAsset : GameAsset
         {
             if (Discoverers.TryGetValue(typeof(TAsset), out var d))
                 return (IAssetDiscoverer<TAsset>)d;

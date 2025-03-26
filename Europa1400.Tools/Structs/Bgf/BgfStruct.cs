@@ -5,11 +5,11 @@ namespace Europa1400.Tools.Structs.Bgf
 {
     public class BgfStruct
     {
-        public BgfHeaderStruct Header { get; private set; }
-        public BgfTextureStruct[] Textures { get; private set; }
-        public BgfGameObjectStruct[] GameObjects { get; private set; }
-        public BgfMappingObjectStruct MappingObject { get; private set; }
-        public BgfFooterStruct Footer { get; private set; }
+        public BgfHeaderStruct Header { get; set; }
+        public BgfTextureStruct[] Textures { get; set; }
+        public BgfGameObjectStruct[] GameObjects { get; set; }
+        public BgfMappingObjectStruct MappingObject { get; set; }
+        public BgfFooterStruct Footer { get; set; }
 
         public static BgfStruct FromBytes(BinaryReader br)
         {

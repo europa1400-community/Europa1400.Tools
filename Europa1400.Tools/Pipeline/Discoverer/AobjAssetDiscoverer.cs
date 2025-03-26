@@ -9,12 +9,13 @@ namespace Europa1400.Tools.Pipeline.Discoverer
     {
         public IEnumerable<AobjAsset> DiscoverAllFromGame(string gamePath)
         {
-            var file = Path.Combine(gamePath, "Data", "A_Obj.dat");
+            var relativePath = Path.Combine("Data", "A_Obj.dat");
+            var filePath = Path.Combine(gamePath, relativePath);
 
-            if (!File.Exists(file))
+            if (!File.Exists(filePath))
                 return Array.Empty<AobjAsset>();
 
-            return new List<AobjAsset> { new AobjAsset { FilePath = file } };
+            return new List<AobjAsset> { new AobjAsset(filePath, relativePath) };
         }
 
         public AobjAsset WrapSingleFile(string filePath)
@@ -22,7 +23,7 @@ namespace Europa1400.Tools.Pipeline.Discoverer
             if (!File.Exists(filePath))
                 throw new FileNotFoundException("AObj file not found", filePath);
 
-            return new AobjAsset { FilePath = Path.GetFullPath(filePath) };
+            return new AobjAsset(Path.GetFullPath(filePath), Path.GetFileName(filePath));
         }
     }
 }

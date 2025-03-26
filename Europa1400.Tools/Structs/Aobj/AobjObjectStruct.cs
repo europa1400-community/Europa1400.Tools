@@ -5,16 +5,16 @@ namespace Europa1400.Tools.Structs.Aobj
 {
     public class AobjObjectStruct
     {
-        public byte Type { get; private set; }
-        public string Name { get; private set; }
-        public byte Level { get; private set; }
-        public uint Time { get; private set; }
-        public ushort[] UnknownData1 { get; private set; }
-        public ushort[] UnknownData2 { get; private set; }
-        public ushort Unknown1 { get; private set; }
-        public uint Price { get; private set; }
-        public uint Unknown2 { get; private set; }
-        public byte Unknown3 { get; private set; }
+        public byte Type { get; set; }
+        public string Name { get; set; }
+        public byte Level { get; set; }
+        public uint Time { get; set; }
+        public ushort[] UnknownData1 { get; set; }
+        public ushort[] UnknownData2 { get; set; }
+        public ushort Unknown1 { get; set; }
+        public uint Price { get; set; }
+        public uint Unknown2 { get; set; }
+        public byte Unknown3 { get; set; }
 
         public static AobjObjectStruct FromBytes(BinaryReader br)
         {

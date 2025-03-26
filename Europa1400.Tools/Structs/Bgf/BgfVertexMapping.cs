@@ -4,8 +4,8 @@ namespace Europa1400.Tools.Structs.Bgf
 {
     public class BgfVertexMapping
     {
-        public Vector3Struct Vertex1 { get; private set; }
-        public Vector3Struct Vertex2 { get; private set; }
+        public Vector3Struct Vertex1 { get; set; }
+        public Vector3Struct Vertex2 { get; set; }
 
         public Vector3Struct Vertex1Transformed => new Vector3Struct
         {

@@ -5,11 +5,11 @@ namespace Europa1400.Tools.Structs.Bgf
 {
     public class BgfTextureStruct
     {
-        public uint Id { get; private set; }
-        public string Name { get; private set; }
-        public string? NameAppendix { get; private set; }
-        public byte? Unknown1 { get; private set; }
-        public byte? Unknown2 { get; private set; }
+        public uint Id { get; set; }
+        public string Name { get; set; }
+        public string? NameAppendix { get; set; }
+        public byte? Unknown1 { get; set; }
+        public byte? Unknown2 { get; set; }
 
         public static BgfTextureStruct FromBytes(BinaryReader br)
         {

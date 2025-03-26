@@ -1,7 +1,9 @@
 namespace Europa1400.Tools.Pipeline.Assets
 {
-    public class AobjAsset : IGameAsset
+    public class AobjAsset : GameAsset
     {
-        public string FilePath { get; set; }
+        public AobjAsset(string filePath, string relativePath) : base(filePath, relativePath)
+        {
+        }
     }
 }

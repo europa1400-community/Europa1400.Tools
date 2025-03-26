@@ -5,7 +5,7 @@ namespace Europa1400.Tools.Structs.Bgf
 {
     public class BgfTextureNameStruct
     {
-        public string Name { get; private set; }
+        public string Name { get; set; }
 
         public static BgfTextureNameStruct FromBytes(BinaryReader br)
         {

@@ -8,17 +8,17 @@ namespace Europa1400.Tools.Structs.Gfx
     public class ShapebankStruct
     {
         public static byte[] ShapbankConst => Encoding.ASCII.GetBytes("SHAPBANK");
-        public byte Unknown1 { get; private set; }
-        public byte Unknown2 { get; private set; }
-        public ushort GraphicsCount { get; private set; }
-        public ushort[] UnknownData1 { get; private set; }
-        public uint Size { get; private set; }
-        public uint Unknown3 { get; private set; }
-        public ushort SizeWithoutFooter { get; private set; }
-        public ushort Unknown4 { get; private set; }
-        public uint[] Offsets { get; private set; }
-        public GraphicStruct[] Graphics { get; private set; }
-        public byte[]? Footer { get; private set; }
+        public byte Unknown1 { get; set; }
+        public byte Unknown2 { get; set; }
+        public ushort GraphicsCount { get; set; }
+        public ushort[] UnknownData1 { get; set; }
+        public uint Size { get; set; }
+        public uint Unknown3 { get; set; }
+        public ushort SizeWithoutFooter { get; set; }
+        public ushort Unknown4 { get; set; }
+        public uint[] Offsets { get; set; }
+        public GraphicStruct[] Graphics { get; set; }
+        public byte[]? Footer { get; set; }
 
         public static ShapebankStruct FromBytes(BinaryReader br, long address)
         {

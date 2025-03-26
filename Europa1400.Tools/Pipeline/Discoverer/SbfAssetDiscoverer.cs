@@ -21,11 +21,10 @@ namespace Europa1400.Tools.Pipeline.Discoverer
                 return Array.Empty<SbfAsset>();
 
             return Directory.GetFiles(sfxRoot, "*.sbf", SearchOption.AllDirectories)
-                .Select(path => new SbfAsset
-                {
-                    FilePath = path,
-                    RelativePath = Path.GetRelativePath(sfxRoot, path).Replace('\\', '/')
-                });
+                .Select(filePath => new SbfAsset(
+                    filePath,
+                    Path.GetRelativePath(sfxRoot, filePath).Replace('\\', '/')
+                ));
         }
 
         public SbfAsset WrapSingleFile(string filePath)
@@ -34,10 +33,10 @@ namespace Europa1400.Tools.Pipeline.Discoverer
                 throw new FileNotFoundException("SBF file not found", filePath);
 
             return new SbfAsset
-            {
-                FilePath = Path.GetFullPath(filePath),
-                RelativePath = Path.GetFileName(filePath)
-            };
+            (
+                Path.GetFullPath(filePath),
+                Path.GetFileName(filePath)
+            );
         }
     }
 }

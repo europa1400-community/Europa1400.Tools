@@ -5,7 +5,7 @@ namespace Europa1400.Tools.Structs.Aobj
 {
     public class AobjStruct
     {
-        public AobjObjectStruct[] Objects { get; private set; }
+        public AobjObjectStruct[] Objects { get; set; }
 
         public static AobjStruct FromBytes(BinaryReader br)
         {

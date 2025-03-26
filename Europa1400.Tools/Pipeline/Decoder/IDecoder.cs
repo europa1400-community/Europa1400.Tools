@@ -4,9 +4,8 @@ using Europa1400.Tools.Pipeline.Assets;
 
 namespace Europa1400.Tools.Pipeline.Decoder
 {
-    public interface IDecoder<in TAsset, TDecoded>
-        where TAsset : IGameAsset
+    public interface IDecoder
     {
-        Task<TDecoded> DecodeAsync(TAsset asset, CancellationToken cancellationToken = default);
+        Task<object> DecodeAsync(GameAsset asset, CancellationToken cancellationToken = default);
     }
 }

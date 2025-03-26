@@ -3,11 +3,6 @@ using Europa1400.Tools.Pipeline.Assets;
 using Europa1400.Tools.Pipeline.Converter;
 using Europa1400.Tools.Pipeline.Decoder;
 using Europa1400.Tools.Pipeline.Output;
-using Europa1400.Tools.Structs.Ageb;
-using Europa1400.Tools.Structs.Aobj;
-using Europa1400.Tools.Structs.Bgf;
-using Europa1400.Tools.Structs.Gfx;
-using Europa1400.Tools.Structs.Sbf;
 using Xunit.Abstractions;
 
 namespace Europa1400.Tools.Tests;
@@ -22,14 +17,14 @@ public class Europa1400Test(ITestOutputHelper testOutputHelper)
         var progress = new Progress<PipelineProgress>(p =>
         {
             progressUpdates.Add(p);
-            testOutputHelper.WriteLine($"[{p.CurrentStep}/{p.TotalSteps}] {p.Percent:P0} - {p.Message}");
+            testOutputHelper.WriteLine(p.ToString());
         });
 
         var pipeline = PipelineBuilder<DummyAsset>
             .Create()
-            .DecodeWith<DummyDecoder, object>()
-            .ConvertWith<DummyConverter, object, List<IFileExport>>()
-            .WriteWith<DummyOutputHandler, List<IFileExport>>()
+            .DecodeWith<DummyDecoder>()
+            .ConvertWith<DummyConverter>()
+            .Write()
             .Build();
 
         await pipeline.ExecuteAsync(
@@ -38,10 +33,6 @@ public class Europa1400Test(ITestOutputHelper testOutputHelper)
         );
 
         Assert.NotEmpty(progressUpdates);
-
-        var final = progressUpdates[^1];
-        Assert.Equal(final.TotalSteps, final.CurrentStep);
-        Assert.Equal(1.0, final.Percent, 2);
     }
 
     [Fact(Skip = "This test does not work yet.")]
@@ -49,7 +40,7 @@ public class Europa1400Test(ITestOutputHelper testOutputHelper)
     {
         await PipelineBuilder<BgfAsset>
             .Create()
-            .DecodeWith<BgfDecoder, BgfStruct>()
+            .DecodeWith<BgfDecoder>()
             .Build()
             .ExecuteAsync(GameAssets.OfType<BgfAsset>().FromGameInstallation(EnvVariables.GameDirectoryPath));
     }
@@ -57,15 +48,16 @@ public class Europa1400Test(ITestOutputHelper testOutputHelper)
     [Fact]
     public async Task TestSounds()
     {
-        var outputPath = Path.Combine("output", "sounds");
+        var outputPath = Path.Combine("output", "Sounds");
+        var progress = new Progress<PipelineProgress>(p => testOutputHelper.WriteLine(p.ToString()));
 
         await PipelineBuilder<SbfAsset>
             .Create()
-            .DecodeWith<SbfDecoder, SbfStruct>()
-            .ConvertWith<SbfConverter, SbfStruct, List<IFileExport>>()
-            .WriteWith<FileExportOutputHandler, List<IFileExport>>(new OutputHandlerOptions { OutputRoot = outputPath })
+            .DecodeWith<SbfDecoder>()
+            .ConvertWith<SbfConverter>()
+            .Write(new OutputHandlerOptions { OutputRoot = outputPath })
             .Build()
-            .ExecuteAsync(GameAssets.OfType<SbfAsset>().FromGameInstallation(EnvVariables.GameDirectoryPath));
+            .ExecuteAsync(GameAssets.OfType<SbfAsset>().FromGameInstallation(EnvVariables.GameDirectoryPath), progress);
 
         Assert.True(Directory.GetFiles(outputPath, "*.wav", SearchOption.AllDirectories).Length > 0);
     }
@@ -73,15 +65,16 @@ public class Europa1400Test(ITestOutputHelper testOutputHelper)
     [Fact]
     public async Task TestGraphics()
     {
-        var outputPath = Path.Combine("output", "graphics");
+        var outputPath = Path.Combine("output", "Graphics");
+        var progress = new Progress<PipelineProgress>(p => testOutputHelper.WriteLine(p.ToString()));
 
         await PipelineBuilder<GfxAsset>
             .Create()
-            .DecodeWith<GfxDecoder, GfxStruct>()
-            .ConvertWith<GfxConverter, GfxStruct, List<IFileExport>>()
-            .WriteWith<FileExportOutputHandler, List<IFileExport>>(new OutputHandlerOptions { OutputRoot = outputPath })
+            .DecodeWith<GfxDecoder>()
+            .ConvertWith<GfxConverter>()
+            .Write(new OutputHandlerOptions { OutputRoot = outputPath })
             .Build()
-            .ExecuteAsync(GameAssets.OfType<GfxAsset>().FromGameInstallation(EnvVariables.GameDirectoryPath));
+            .ExecuteAsync(GameAssets.OfType<GfxAsset>().FromGameInstallation(EnvVariables.GameDirectoryPath), progress);
 
         Assert.True(Directory.GetFiles(outputPath, "*.png", SearchOption.AllDirectories).Length > 0);
     }
@@ -89,14 +82,16 @@ public class Europa1400Test(ITestOutputHelper testOutputHelper)
     [Fact]
     public async Task TestAgeb()
     {
-        var outputPath = Path.Combine("output", "ageb");
+        var outputPath = Path.Combine("output");
+        var progress = new Progress<PipelineProgress>(p => testOutputHelper.WriteLine(p.ToString()));
 
         await PipelineBuilder<AgebAsset>
             .Create()
-            .DecodeWith<AgebDecoder, AgebStruct>()
-            .WriteWith<FileExportOutputHandler, List<IFileExport>>(new OutputHandlerOptions { OutputRoot = outputPath })
+            .DecodeWith<AgebDecoder>()
+            .Write(new OutputHandlerOptions { OutputRoot = outputPath })
             .Build()
-            .ExecuteAsync(GameAssets.OfType<AgebAsset>().FromGameInstallation(EnvVariables.GameDirectoryPath));
+            .ExecuteAsync(GameAssets.OfType<AgebAsset>().FromGameInstallation(EnvVariables.GameDirectoryPath),
+                progress);
 
         Assert.True(Directory.GetFiles(outputPath, "*.json", SearchOption.AllDirectories).Length > 0);
     }
@@ -104,14 +99,16 @@ public class Europa1400Test(ITestOutputHelper testOutputHelper)
     [Fact]
     public async Task TestAobj()
     {
-        var outputPath = Path.Combine("output", "aobj");
+        var outputPath = Path.Combine("output");
+        var progress = new Progress<PipelineProgress>(p => testOutputHelper.WriteLine(p.ToString()));
 
         await PipelineBuilder<AobjAsset>
             .Create()
-            .DecodeWith<AobjDecoder, AobjStruct>()
-            .WriteWith<FileExportOutputHandler, List<IFileExport>>(new OutputHandlerOptions { OutputRoot = outputPath })
+            .DecodeWith<AobjDecoder>()
+            .Write(new OutputHandlerOptions { OutputRoot = outputPath })
             .Build()
-            .ExecuteAsync(GameAssets.OfType<AobjAsset>().FromGameInstallation(EnvVariables.GameDirectoryPath));
+            .ExecuteAsync(GameAssets.OfType<AobjAsset>().FromGameInstallation(EnvVariables.GameDirectoryPath),
+                progress);
 
         Assert.True(Directory.GetFiles(outputPath, "*.json", SearchOption.AllDirectories).Length > 0);
     }

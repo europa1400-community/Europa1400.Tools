@@ -5,10 +5,10 @@ namespace Europa1400.Tools.Structs.Bgf
 {
     public class BgfModelStruct
     {
-        public uint VertexCount { get; private set; }
-        public uint PolygonCount { get; private set; }
-        public Vector3Struct[] Vertices { get; private set; }
-        public BgfPolygonStruct[] Polygons { get; private set; }
+        public uint VertexCount { get; set; }
+        public uint PolygonCount { get; set; }
+        public Vector3Struct[] Vertices { get; set; }
+        public BgfPolygonStruct[] Polygons { get; set; }
 
         public static BgfModelStruct FromBytes(BinaryReader br)
         {

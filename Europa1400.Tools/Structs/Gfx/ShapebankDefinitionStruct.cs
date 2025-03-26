@@ -6,25 +6,25 @@ namespace Europa1400.Tools.Structs.Gfx
 {
     public class ShapebankDefinitionStruct
     {
-        public string Name { get; private set; }
+        public string Name { get; set; }
 
         /// <summary>
         ///     Either base address of main shapebank or offset from base address of the main shapebank inc ase of child shapebank
         ///     definition
         /// </summary>
-        public uint Address { get; private set; }
+        public uint Address { get; set; }
 
-        public uint Size { get; private set; }
-        public int ChildShapebankCount { get; private set; }
-        public uint Unknown2 { get; private set; }
-        public ushort Width { get; private set; }
-        public ushort Height { get; private set; }
+        public uint Size { get; set; }
+        public int ChildShapebankCount { get; set; }
+        public uint Unknown2 { get; set; }
+        public ushort Width { get; set; }
+        public ushort Height { get; set; }
         public bool IsFont => Name.StartsWith("_FONT");
 
         /// <summary>
         ///     Null when shapebank definition is main shapebank
         /// </summary>
-        public ShapebankStruct? Shapebank { get; private set; }
+        public ShapebankStruct? Shapebank { get; set; }
 
 
         public static ShapebankDefinitionStruct FromBytes(BinaryReader br, bool shouldBeChildShapebank = false)

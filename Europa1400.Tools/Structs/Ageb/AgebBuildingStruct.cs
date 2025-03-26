@@ -5,21 +5,21 @@ namespace Europa1400.Tools.Structs.Ageb
 {
     public class AgebBuildingStruct
     {
-        public byte GroupId { get; private set; }
-        public string Name { get; private set; }
-        public byte Unknown1 { get; private set; }
-        public byte SizeData { get; private set; }
-        public ushort[] UnknownData1 { get; private set; }
-        public uint[] UnknownData2 { get; private set; }
-        public byte[] UnknownData3 { get; private set; }
-        public byte[] UnknownData4 { get; private set; }
-        public byte[] UnknownData5 { get; private set; }
-        public AgebBuildingCoordinatesStruct Coordinates1 { get; private set; }
-        public AgebBuildingCoordinatesStruct Coordinates2 { get; private set; }
-        public uint Time { get; private set; }
-        public byte Level { get; private set; }
-        public byte Unknown2 { get; private set; }
-        public uint Price { get; private set; }
+        public byte GroupId { get; set; }
+        public string Name { get; set; }
+        public byte Unknown1 { get; set; }
+        public byte SizeData { get; set; }
+        public ushort[] UnknownData1 { get; set; }
+        public uint[] UnknownData2 { get; set; }
+        public byte[] UnknownData3 { get; set; }
+        public byte[] UnknownData4 { get; set; }
+        public byte[] UnknownData5 { get; set; }
+        public AgebBuildingCoordinatesStruct Coordinates1 { get; set; }
+        public AgebBuildingCoordinatesStruct Coordinates2 { get; set; }
+        public uint Time { get; set; }
+        public byte Level { get; set; }
+        public byte Unknown2 { get; set; }
+        public uint Price { get; set; }
 
         public static AgebBuildingStruct FromBytes(BinaryReader br)
         {

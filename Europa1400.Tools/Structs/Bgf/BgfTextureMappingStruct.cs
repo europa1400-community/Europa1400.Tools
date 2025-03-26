@@ -4,9 +4,9 @@ namespace Europa1400.Tools.Structs.Bgf
 {
     public class BgfTextureMappingStruct
     {
-        public Vector3Struct ValuesU { get; private set; }
-        public Vector3Struct ValuesV { get; private set; }
-        public Vector3Struct ValuesW { get; private set; }
+        public Vector3Struct ValuesU { get; set; }
+        public Vector3Struct ValuesV { get; set; }
+        public Vector3Struct ValuesW { get; set; }
 
         public BgfTextureCoordinatesStruct TextureCoordinates1 => new BgfTextureCoordinatesStruct
         {

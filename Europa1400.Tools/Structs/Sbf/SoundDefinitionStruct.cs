@@ -4,9 +4,9 @@ namespace Europa1400.Tools.Structs.Sbf
 {
     public class SoundDefinitionStruct
     {
-        public SoundType SoundType { get; private set; }
-        public uint Length { get; private set; }
-        public uint Magic { get; private set; }
+        public SoundType SoundType { get; set; }
+        public uint Length { get; set; }
+        public uint Magic { get; set; }
 
         public static SoundDefinitionStruct FromBytes(BinaryReader br)
         {

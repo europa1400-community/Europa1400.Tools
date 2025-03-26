@@ -5,8 +5,8 @@ namespace Europa1400.Tools.Structs.Gfx
 {
     public class GfxStruct
     {
-        public uint ShapebankCount { get; private set; }
-        public ShapebankDefinitionStruct[] ShapebankDefinitions { get; private set; }
+        public uint ShapebankCount { get; set; }
+        public ShapebankDefinitionStruct[] ShapebankDefinitions { get; set; }
 
         public static GfxStruct FromBytes(BinaryReader br)
         {

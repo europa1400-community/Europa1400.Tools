@@ -4,9 +4,9 @@ namespace Europa1400.Tools.Structs.Bgf
 {
     public class BgfPolygonMappingStruct
     {
-        public BgfFaceStruct Face { get; private set; }
-        public BgfTextureMappingStruct TextureMapping { get; private set; }
-        public byte TextureIndex { get; private set; }
+        public BgfFaceStruct Face { get; set; }
+        public BgfTextureMappingStruct TextureMapping { get; set; }
+        public byte TextureIndex { get; set; }
 
         public static BgfPolygonMappingStruct FromBytes(BinaryReader br)
         {

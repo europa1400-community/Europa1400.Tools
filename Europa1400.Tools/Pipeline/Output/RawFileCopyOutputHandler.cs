@@ -8,17 +8,20 @@ using Europa1400.Tools.Pipeline.Assets;
 
 namespace Europa1400.Tools.Pipeline.Output
 {
-    public class RawFileCopyOutputHandler : IOutputHandler<IGameAsset, OutputHandlerOptions>
+    public class RawFileCopyOutputHandler : IOutputHandler
     {
-        public Task WriteAsync(IGameAsset asset, IGameAsset _, OutputHandlerOptions options,
+        public Task WriteAsync(object output, GameAsset asset, OutputHandlerOptions options,
             CancellationToken cancellationToken = default)
         {
+            if (!(output is GameAsset outputAsset))
+                throw new ArgumentException("Output must be a GameAsset", nameof(output));
+
             var visited = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            WriteRecursive(asset, visited, options, cancellationToken);
+            WriteRecursive(outputAsset, visited, options, cancellationToken);
             return Task.CompletedTask;
         }
 
-        private static void WriteRecursive(IGameAsset asset, HashSet<string> visited, OutputHandlerOptions options,
+        private static void WriteRecursive(GameAsset asset, HashSet<string> visited, OutputHandlerOptions options,
             CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -42,10 +45,10 @@ namespace Europa1400.Tools.Pipeline.Output
                 var value = prop.GetValue(asset);
                 switch (value)
                 {
-                    case IGameAsset child:
+                    case GameAsset child:
                         WriteRecursive(child, visited, options, cancellationToken);
                         break;
-                    case IEnumerable<IGameAsset> list:
+                    case IEnumerable<GameAsset> list:
                         foreach (var item in list)
                             WriteRecursive(item, visited, options, cancellationToken);
                         break;

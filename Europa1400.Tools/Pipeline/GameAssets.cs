@@ -7,14 +7,14 @@ namespace Europa1400.Tools.Pipeline
 {
     public static class GameAssets
     {
-        public static GameAssetSelector<TAsset> OfType<TAsset>() where TAsset : IGameAsset
+        public static GameAssetSelector<TAsset> OfType<TAsset>() where TAsset : GameAsset
         {
             return new GameAssetSelector<TAsset>();
         }
 
         public static AssetSelection<TAsset> FromGameInstallation<TAsset>(
             this GameAssetSelector<TAsset> selector, string gamePath)
-            where TAsset : IGameAsset
+            where TAsset : GameAsset
         {
             if (!Directory.Exists(gamePath))
                 throw new DirectoryNotFoundException($"Game path not found: {gamePath}");

@@ -5,7 +5,7 @@ namespace Europa1400.Tools.Structs.Ageb
 {
     public class AgebStruct
     {
-        public AgebBuildingStruct[] Buildings { get; private set; }
+        public AgebBuildingStruct[] Buildings { get; set; }
 
         public static AgebStruct FromBytes(BinaryReader br)
         {

@@ -1,7 +1,9 @@
 namespace Europa1400.Tools.Pipeline.Assets
 {
-    public class GfxAsset : IGameAsset
+    public class GfxAsset : GameAsset
     {
-        public string FilePath { get; set; }
+        public GfxAsset(string filePath, string relativePath) : base(filePath, relativePath)
+        {
+        }
     }
 }

@@ -1,11 +1,18 @@
+using Europa1400.Tools.Pipeline.Assets;
+
 namespace Europa1400.Tools.Pipeline
 {
     public class PipelineProgress
     {
-        public int TotalSteps { get; set; }
-        public int CurrentStep { get; set; }
-        public string Message { get; set; }
+        public int Total { get; set; }
+        public int Current { get; set; }
+        public GameAsset? Asset { get; set; }
+        public string? FileName { get; set; }
+        public PipelineStep Step { get; set; } = PipelineStep.None;
 
-        public double Percent => TotalSteps == 0 ? 0 : (double)CurrentStep / TotalSteps;
+        public override string ToString()
+        {
+            return $"{Step} {Current}/{Total} {Asset?.RelativePath ?? FileName}";
+        }
     }
 }

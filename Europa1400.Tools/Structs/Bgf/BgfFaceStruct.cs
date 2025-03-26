@@ -4,9 +4,9 @@ namespace Europa1400.Tools.Structs.Bgf
 {
     public class BgfFaceStruct
     {
-        public uint A { get; private set; }
-        public uint B { get; private set; }
-        public uint C { get; private set; }
+        public uint A { get; set; }
+        public uint B { get; set; }
+        public uint C { get; set; }
 
         public static BgfFaceStruct FromBytes(BinaryReader br)
         {

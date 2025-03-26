@@ -4,11 +4,11 @@ namespace Europa1400.Tools.Structs.Ageb
 {
     public class AgebBuildingCoordinatesStruct
     {
-        public byte X { get; private set; }
+        public byte X { get; set; }
 
-        public byte Y { get; private set; }
+        public byte Y { get; set; }
 
-        public byte Z { get; private set; }
+        public byte Z { get; set; }
 
         public static AgebBuildingCoordinatesStruct FromBytes(BinaryReader br)
         {

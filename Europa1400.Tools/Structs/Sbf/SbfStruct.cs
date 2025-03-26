@@ -5,12 +5,12 @@ namespace Europa1400.Tools.Structs.Sbf
 {
     public class SbfStruct
     {
-        public string Name { get; private set; }
-        public uint SoundbankCount { get; private set; }
-        public byte[] MagicBytes { get; private set; }
-        public byte[] Padding { get; private set; }
-        public SoundbankDefinitionStruct[] SoundbankDefinitions { get; private set; }
-        public SoundbankStruct[] Soundbanks { get; private set; }
+        public string Name { get; set; }
+        public uint SoundbankCount { get; set; }
+        public byte[] MagicBytes { get; set; }
+        public byte[] Padding { get; set; }
+        public SoundbankDefinitionStruct[] SoundbankDefinitions { get; set; }
+        public SoundbankStruct[] Soundbanks { get; set; }
 
         public static SbfStruct FromBytes(BinaryReader br)
         {
