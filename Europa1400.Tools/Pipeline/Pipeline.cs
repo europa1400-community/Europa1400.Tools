@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Europa1400.Tools.Pipeline.Assets;
@@ -37,23 +38,25 @@ namespace Europa1400.Tools.Pipeline
             var pipelineProgress = new PipelineProgress();
             progress?.Report(pipelineProgress);
 
-            await DecodeAsync(selection, pipelineProgress, progress, cancellationToken);
+            var decodedAssets = await DecodeAsync(selection, pipelineProgress, progress, cancellationToken);
 
             if (_converter != null || _write)
-                await ConvertAndWriteAsync(selection, pipelineProgress, progress, cancellationToken);
+                await ConvertAndWriteAsync(decodedAssets, typeof(TAsset).Name, progress, cancellationToken);
         }
 
-        private async Task DecodeAsync(
+        private async Task<IEnumerable<GameAsset>> DecodeAsync(
             AssetSelection<TAsset> selection,
             PipelineProgress pipelineProgress,
             IProgress<PipelineProgress>? decodeProgress = null,
             CancellationToken cancellationToken = default)
         {
-            if (_decoder == null) return;
+            if (_decoder == null) return Enumerable.Empty<GameAsset>();
 
             pipelineProgress.Step = PipelineStep.Decode;
             pipelineProgress.Total = selection.Assets.Count;
             decodeProgress?.Report(pipelineProgress);
+
+            var decodedAssets = new List<GameAsset>();
 
             foreach (var asset in selection.Assets)
             {
@@ -72,16 +75,33 @@ namespace Europa1400.Tools.Pipeline
                 };
 
                 var writer = new ObjectSerializationOutputHandler();
-                await writer.WriteAsync(decoded, asset, options, cancellationToken);
+
+                if (_decoder is ISubAssetProvider subAssetProvider && decoded is IEnumerable<object> decodedEnumerable)
+                {
+                    var subAssets = subAssetProvider.GetSubAssets(asset, decoded).ToList();
+                    await writer.WriteAsync(decodedEnumerable, subAssets, options, cancellationToken);
+                    decodedAssets.AddRange(subAssets);
+                }
+                else
+                {
+                    var decodedFilePath = PathHelper.GetDecodedCachePath(asset, typeof(TAsset).Name);
+                    var decodedRelativePath = PathHelper.GetDecodedCacheRelativePath(asset);
+                    var decodedAsset = new GameAsset(decodedFilePath, decodedRelativePath);
+                    await writer.WriteAsync(decoded, asset, options, cancellationToken);
+                    decodedAssets.Add(decodedAsset);
+                }
+
 
                 pipelineProgress.Current += 1;
                 decodeProgress?.Report(pipelineProgress);
             }
+
+            return decodedAssets;
         }
 
         private async Task ConvertAndWriteAsync(
-            AssetSelection<TAsset> selection,
-            PipelineProgress pipelineProgress,
+            IEnumerable<GameAsset> assets,
+            string typeFolder,
             IProgress<PipelineProgress>? progress = null,
             CancellationToken cancellationToken = default)
         {
@@ -89,22 +109,23 @@ namespace Europa1400.Tools.Pipeline
             // When convert exists, we need to use the EstimateTotalSteps method from the decoder on each asset and get the sum
             // When convert does not exist, we need use the total number of assets
 
-            pipelineProgress = new PipelineProgress();
+            var assetsList = assets.ToList();
+            var pipelineProgress = new PipelineProgress();
 
             if (_converter != null && _decoder != null)
-                foreach (var asset in selection.Assets)
+                foreach (var asset in assetsList)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    var decoded = await LoadCachedDecodedAsset(asset, cancellationToken);
+                    var decoded = await LoadCachedDecodedAsset(asset, typeFolder, cancellationToken);
                     var steps = _converter.EstimateSteps(decoded);
 
                     pipelineProgress.Total += steps;
                 }
             else
-                pipelineProgress.Total = selection.Assets.Count;
+                pipelineProgress.Total = assetsList.Count;
 
-            foreach (var asset in selection.Assets)
+            foreach (var asset in assetsList)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 pipelineProgress.Asset = asset;
@@ -116,7 +137,7 @@ namespace Europa1400.Tools.Pipeline
                 if (_converter != null)
                     if (_decoder != null)
                     {
-                        var decoded = await LoadCachedDecodedAsset(asset, cancellationToken);
+                        var decoded = await LoadCachedDecodedAsset(asset, typeFolder, cancellationToken);
                         var converted =
                             await _converter.ConvertAsync(decoded, pipelineProgress, progress, cancellationToken);
                         objectsToWrite.AddRange(converted);
@@ -134,7 +155,7 @@ namespace Europa1400.Tools.Pipeline
                     }
                     else if (_decoder != null && _converter == null)
                     {
-                        var decoded = await LoadCachedDecodedAsset(asset, cancellationToken);
+                        var decoded = await LoadCachedDecodedAsset(asset, typeFolder, cancellationToken);
                         objectsToWrite.Add(decoded);
                     }
                     else if (_decoder == null && _converter != null)
@@ -156,9 +177,10 @@ namespace Europa1400.Tools.Pipeline
             }
         }
 
-        private async Task<object> LoadCachedDecodedAsset(TAsset asset, CancellationToken cancellationToken)
+        private async Task<object> LoadCachedDecodedAsset(GameAsset asset, string typeFolder,
+            CancellationToken cancellationToken)
         {
-            var cachePath = PathHelper.GetDecodedCachePath(asset);
+            var cachePath = PathHelper.GetDecodedCachePath(asset, typeFolder);
 
             if (!File.Exists(cachePath))
                 throw new FileNotFoundException($"Decoded asset not found: {cachePath}");
@@ -166,7 +188,7 @@ namespace Europa1400.Tools.Pipeline
             return await ObjectSerializationInputLoader.LoadAsync(cachePath, cancellationToken);
         }
 
-        private async Task WriteAsync(object objectToWrite, TAsset asset, CancellationToken cancellationToken)
+        private async Task WriteAsync(object objectToWrite, GameAsset asset, CancellationToken cancellationToken)
         {
             switch (objectToWrite)
             {

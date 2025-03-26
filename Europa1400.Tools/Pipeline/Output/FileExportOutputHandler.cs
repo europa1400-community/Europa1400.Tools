@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Europa1400.Tools.Pipeline.Assets;
@@ -18,11 +20,11 @@ namespace Europa1400.Tools.Pipeline.Output
 
             var relativeDirectory = Path.GetDirectoryName(asset.RelativePath) ?? string.Empty;
             var fullPath = Path.Combine(options.OutputRoot, relativeDirectory, fileExport.FilePath);
-            
+
             Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
 
             if (!options.OverwriteExisting && File.Exists(fullPath))
-                return Task.CompletedTask;
+                throw new InvalidOperationException("File already exists");
 
             File.WriteAllBytes(fullPath, fileExport.Content);
 

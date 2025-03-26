@@ -37,14 +37,13 @@ namespace Europa1400.Tools.Pipeline.Converter
 
                 for (var i = 0; i < soundbank.Sounds.Length; i++)
                 {
-                    pipelineProgress.FileName = Path.Combine($"{bankName}_{i:D2}.wav");
+                    var fileName = Path.Combine(sbfStruct.Name, $"{bankName}_{i:000}.wav");
+                    pipelineProgress.FileName = fileName;
                     progress?.Report(pipelineProgress);
                     cancellationToken.ThrowIfCancellationRequested();
 
                     var sound = soundbank.Sounds[i];
                     var def = soundbank.SoundDefinitions[i];
-
-                    var fileName = $"{bankName}_{i:D2}.wav";
 
                     var wavBytes = def.SoundType switch
                     {

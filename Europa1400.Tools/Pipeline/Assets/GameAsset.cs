@@ -1,8 +1,8 @@
 namespace Europa1400.Tools.Pipeline.Assets
 {
-    public abstract class GameAsset
+    public class GameAsset
     {
-        protected GameAsset(string filePath, string relativePath)
+        public GameAsset(string filePath, string relativePath)
         {
             FilePath = filePath;
             RelativePath = relativePath;

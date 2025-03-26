@@ -14,55 +14,51 @@ namespace Europa1400.Tools.Pipeline.Converter
     {
         public int EstimateSteps(object input)
         {
-            if (!(input is GfxStruct gfxStruct))
-                throw new ArgumentException("Input is not of type GfxInput");
+            if (!(input is ShapebankDefinitionStruct shapebankDefinition))
+                throw new ArgumentException("Input is not of type ShapebankDefinitionStruct");
 
-            return gfxStruct.ShapebankDefinitions.Sum(s => s.Shapebank?.Graphics.Length ?? 0);
+            return shapebankDefinition.Shapebank?.Graphics.Length ?? 0;
         }
 
         public Task<IEnumerable<IFileExport>> ConvertAsync(object input, PipelineProgress pipelineProgress,
             IProgress<PipelineProgress>? progress, CancellationToken cancellationToken = default)
         {
-            if (!(input is GfxStruct gfxStruct))
-                throw new ArgumentException("Input is not of type GfxInput");
+            if (!(input is ShapebankDefinitionStruct shapebankDefinition))
+                throw new ArgumentException("Input is not of type ShapebankDefinitionStruct");
 
             var exports = new List<IFileExport>();
 
-            foreach (var shapebankDef in gfxStruct.ShapebankDefinitions)
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var shapebank = shapebankDefinition.Shapebank;
+            if (shapebank == null) return Task.FromResult(exports.AsEnumerable());
+
+            var baseName = shapebankDefinition.Name;
+
+            for (var i = 0; i < shapebank.Graphics.Length; i++)
             {
+                pipelineProgress.FileName = Path.Combine(baseName, $"{baseName}_{i}.png");
+                progress?.Report(pipelineProgress);
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var shapebank = shapebankDef.Shapebank;
-                if (shapebank == null)
-                    continue;
+                var graphic = shapebank.Graphics[i];
+                var image = ConvertGraphic(graphic);
 
-                var baseName = shapebankDef.Name;
+                using var ms = new MemoryStream();
+                image.Encode(ms, SKEncodedImageFormat.Png, 100);
+                ms.Seek(0, SeekOrigin.Begin);
 
-                for (var i = 0; i < shapebank.Graphics.Length; i++)
+                var fileName = $"{baseName}_{i}.png";
+                var filePath = Path.Combine(baseName, fileName).Replace('\\', '/');
+
+                exports.Add(new FileExport
                 {
-                    pipelineProgress.FileName = Path.Combine(baseName, $"{baseName}_{i}.png");
-                    progress?.Report(pipelineProgress);
-                    cancellationToken.ThrowIfCancellationRequested();
+                    FilePath = filePath,
+                    Content = ms.ToArray()
+                });
 
-                    var graphic = shapebank.Graphics[i];
-                    var image = ConvertGraphic(graphic);
-
-                    using var ms = new MemoryStream();
-                    image.Encode(ms, SKEncodedImageFormat.Png, 100);
-                    ms.Seek(0, SeekOrigin.Begin);
-
-                    var fileName = $"{baseName}_{i}.png";
-                    var filePath = Path.Combine(baseName, fileName).Replace('\\', '/');
-
-                    exports.Add(new FileExport
-                    {
-                        FilePath = filePath,
-                        Content = ms.ToArray()
-                    });
-
-                    pipelineProgress.Current += 1;
-                    progress?.Report(pipelineProgress);
-                }
+                pipelineProgress.Current += 1;
+                progress?.Report(pipelineProgress);
             }
 
             return Task.FromResult(exports.AsEnumerable());

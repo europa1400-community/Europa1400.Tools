@@ -5,10 +5,13 @@ namespace Europa1400.Tools.Pipeline
 {
     public static class PathHelper
     {
-        public static string GetDecodedCachePath(GameAsset asset)
+        public static string GetDecodedCacheRelativePath(GameAsset asset)
         {
-            var typeFolder = asset.GetType().Name;
+            return Path.ChangeExtension(asset.RelativePath, ".json");
+        }
 
+        public static string GetDecodedCachePath(GameAsset asset, string typeFolder)
+        {
             // Get the relative directory (without the filename)
             var relativeDir = Path.GetDirectoryName(asset.RelativePath) ?? string.Empty;
 

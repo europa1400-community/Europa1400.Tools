@@ -112,4 +112,46 @@ public class Europa1400Test(ITestOutputHelper testOutputHelper)
 
         Assert.True(Directory.GetFiles(outputPath, "*.json", SearchOption.AllDirectories).Length > 0);
     }
+
+    [Fact]
+    public async Task TestAll()
+    {
+        var progress = new Progress<PipelineProgress>(p => testOutputHelper.WriteLine(p.ToString()));
+
+        var outputPath = Path.Combine("output");
+        await PipelineBuilder<AgebAsset>
+            .Create()
+            .DecodeWith<AgebDecoder>()
+            .Write(new OutputHandlerOptions { OutputRoot = outputPath })
+            .Build()
+            .ExecuteAsync(GameAssets.OfType<AgebAsset>().FromGameInstallation(EnvVariables.GameDirectoryPath),
+                progress);
+
+        outputPath = Path.Combine("output");
+        await PipelineBuilder<AobjAsset>
+            .Create()
+            .DecodeWith<AobjDecoder>()
+            .Write(new OutputHandlerOptions { OutputRoot = outputPath })
+            .Build()
+            .ExecuteAsync(GameAssets.OfType<AobjAsset>().FromGameInstallation(EnvVariables.GameDirectoryPath),
+                progress);
+
+        outputPath = Path.Combine("output", "Sounds");
+        await PipelineBuilder<SbfAsset>
+            .Create()
+            .DecodeWith<SbfDecoder>()
+            .ConvertWith<SbfConverter>()
+            .Write(new OutputHandlerOptions { OutputRoot = outputPath })
+            .Build()
+            .ExecuteAsync(GameAssets.OfType<SbfAsset>().FromGameInstallation(EnvVariables.GameDirectoryPath), progress);
+
+        outputPath = Path.Combine("output", "Graphics");
+        await PipelineBuilder<GfxAsset>
+            .Create()
+            .DecodeWith<GfxDecoder>()
+            .ConvertWith<GfxConverter>()
+            .Write(new OutputHandlerOptions { OutputRoot = outputPath })
+            .Build()
+            .ExecuteAsync(GameAssets.OfType<GfxAsset>().FromGameInstallation(EnvVariables.GameDirectoryPath), progress);
+    }
 }
