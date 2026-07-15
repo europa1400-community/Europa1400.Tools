@@ -47,7 +47,7 @@ namespace Europa1400.Tools.Pipeline.Converter
 
                     var wavBytes = def.SoundType switch
                     {
-                        SoundType.Wav => sound,
+                        SoundType.Wav => ConvertWavToWav(sound),
                         SoundType.Mp3 => ConvertMp3ToWav(sound),
                         _ => throw new NotSupportedException($"Unsupported sound type: {def.SoundType}")
                     };
@@ -69,6 +69,22 @@ namespace Europa1400.Tools.Pipeline.Converter
         private static string Sanitize(string name)
         {
             return Path.GetInvalidFileNameChars().Aggregate(name, (current, c) => current.Replace(c, '_'));
+        }
+
+        private static byte[] ConvertWavToWav(byte[] wavBytes)
+        {
+            try
+            {
+                using var inputStream = new MemoryStream(wavBytes);
+                using var reader = new WaveFileReader(inputStream);
+                using var outputStream = new MemoryStream();
+                WaveFileWriter.WriteWavFileToStream(outputStream, reader);
+                return outputStream.ToArray();
+            }
+            catch
+            {
+                return wavBytes;
+            }
         }
 
         private static byte[] ConvertMp3ToWav(byte[] mp3Bytes)

@@ -1,4 +1,6 @@
+using System.Linq;
 using Europa1400.Tools.Decoder.Bgf;
+using Europa1400.Tools.Structs.Bgf;
 
 namespace Europa1400.Tools.Gltf;
 

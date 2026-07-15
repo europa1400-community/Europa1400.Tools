@@ -1,3 +1,6 @@
+using System.IO;
+using Europa1400.Tools.Structs;
+
 namespace Europa1400.Tools.Decoder.Bgf;
 
 internal class BgfVertexMapping

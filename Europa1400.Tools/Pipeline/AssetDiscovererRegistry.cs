@@ -16,6 +16,15 @@ namespace Europa1400.Tools.Pipeline
             Register(new SbfAssetDiscoverer());
             Register(new BgfAssetDiscoverer());
             Register(new GfxAssetDiscoverer());
+            Register(new TxsAssetDiscoverer());
+            Register(new BafAssetDiscoverer());
+            Register(new BafIniAssetDiscoverer());
+            Register(new OgrAssetDiscoverer());
+            Register(new Ed3AssetDiscoverer());
+            Register(new ResAssetDiscoverer());
+            Register(new FormAssetDiscoverer());
+            Register(new ScrAssetDiscoverer());
+            Register(new SavAssetDiscoverer());
             Register(new DummyAssetDiscoverer());
         }
 

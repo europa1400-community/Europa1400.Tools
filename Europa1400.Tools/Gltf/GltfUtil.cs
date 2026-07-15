@@ -1,8 +1,10 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using Europa1400.Tools.Decoder.Baf;
-using Europa1400.Tools.Decoder.Bgf;
 using Europa1400.Tools.Decoder.Txs;
 using Europa1400.Tools.Extensions;
+using Europa1400.Tools.Structs.Bgf;
 using SharpGLTF.Geometry;
 using SharpGLTF.Geometry.VertexTypes;
 using SharpGLTF.Materials;

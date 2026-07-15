@@ -11,15 +11,15 @@
         <RepositoryUrl>https://github.com/europa1400-community/Europa1400.Tools</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
 
-        <TargetFramework>netstandard2.1</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>disable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Magick.NET-Q8-x64" Version="14.0.0"/>
-        <PackageReference Include="Magick.NET.Core" Version="14.0.0"/>
+        <PackageReference Include="Magick.NET-Q8-x64" Version="14.15.0"/>
+        <PackageReference Include="Magick.NET.Core" Version="14.15.0"/>
         <PackageReference Include="MP3Sharp" Version="1.0.5"/>
         <PackageReference Include="NAudio.Core" Version="2.2.1"/>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>

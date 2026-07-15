@@ -1,7 +1,11 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.IO.Compression;
 using Europa1400.Tools.Decoder.Bgf;
 using Europa1400.Tools.Decoder.Txs;
 using Europa1400.Tools.Gltf;
+using Europa1400.Tools.Structs.Bgf;
 using ImageMagick;
 using ImageMagick.Formats;
 
