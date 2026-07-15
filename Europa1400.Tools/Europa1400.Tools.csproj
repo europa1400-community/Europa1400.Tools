@@ -11,8 +11,8 @@
         <RepositoryUrl>https://github.com/europa1400-community/Europa1400.Tools</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
 
-        <TargetFramework>net8.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <ImplicitUsings>disable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
@@ -20,11 +20,17 @@
     <ItemGroup>
         <PackageReference Include="Magick.NET-Q8-x64" Version="14.0.0"/>
         <PackageReference Include="Magick.NET.Core" Version="14.0.0"/>
-        <PackageReference Include="NAudio" Version="2.2.1"/>
+        <PackageReference Include="MP3Sharp" Version="1.0.5"/>
+        <PackageReference Include="NAudio.Core" Version="2.2.1"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
+        <PackageReference Include="SkiaSharp" Version="3.116.1"/>
         <PackageReference Include="SharpGLTF.Core" Version="1.0.3"/>
         <PackageReference Include="SharpGLTF.Runtime" Version="1.0.3"/>
         <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.3"/>
         <PackageReference Include="System.Drawing.Common" Version="8.0.8"/>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>Europa1400.Tools.Tests</_Parameter1>
+        </AssemblyAttribute>
     </ItemGroup>
 
     <ItemGroup>

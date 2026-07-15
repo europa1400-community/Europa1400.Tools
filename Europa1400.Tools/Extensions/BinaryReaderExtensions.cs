@@ -1,29 +1,39 @@
 // ReSharper disable InconsistentNaming
 
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Europa1400.Tools.Extensions;
 
 internal static class BinaryReaderExtensions
 {
-    internal static string ReadString(this BinaryReader reader, int length)
+    public static class BinaryReaderExtensions
     {
-        var bytes = reader.ReadBytes(length);
-        return Encoding.Latin1.GetString(bytes);
-    }
+        public static string ReadString(this BinaryReader reader, int length)
+        {
+            var bytes = reader.ReadBytes(length);
+            var latin1 = Encoding.GetEncoding(28591);
+            
+            if(latin1 == null)
+                throw new NullReferenceException("Latin1 encoding not found.");
+                
+            return latin1.GetString(bytes);
+        }
 
-    internal static byte PeekByte(this BinaryReader reader)
-    {
-        if (reader.BaseStream.Position == reader.BaseStream.Length) throw new EndOfStreamException();
+        public static byte PeekByte(this BinaryReader reader)
+        {
+            if (reader.BaseStream.Position == reader.BaseStream.Length) throw new EndOfStreamException();
 
-        var value = reader.ReadByte();
-        reader.BaseStream.Seek(-1, SeekOrigin.Current);
-        return value;
-    }
+            var value = reader.ReadByte();
+            reader.BaseStream.Seek(-1, SeekOrigin.Current);
+            return value;
+        }
 
-    internal static bool SkipOptionalByte(this BinaryReader reader, byte value)
-    {
-        var peekedValue = reader.PeekByte();
+        public static bool SkipOptionalByte(this BinaryReader reader, byte value)
+        {
+            var peekedValue = reader.PeekByte();
 
         if (peekedValue != value) return false;
 
@@ -31,88 +41,88 @@ internal static class BinaryReaderExtensions
         return true;
     }
 
-    internal static bool SkipOptionalBytesAll(this BinaryReader reader, params byte[] values)
-    {
-        var initialPosition = reader.BaseStream.Position;
+        public static bool SkipOptionalBytesAll(this BinaryReader reader, params byte[] values)
+        {
+            var initialPosition = reader.BaseStream.Position;
 
-        if (Array.TrueForAll(values, reader.SkipOptionalByte)) return true;
+            if (Array.TrueForAll(values, reader.SkipOptionalByte)) return true;
 
-        reader.BaseStream.Position = initialPosition;
-        return false;
-    }
+            reader.BaseStream.Position = initialPosition;
+            return false;
+        }
 
-    internal static string ReadCString(this BinaryReader reader)
-    {
-        var byteList = new List<byte>();
-        byte b;
+        public static string ReadCString(this BinaryReader reader)
+        {
+            var byteList = new List<byte>();
+            byte b;
 
         while ((b = reader.ReadByte()) != 0) byteList.Add(b);
 
-        return Encoding.Latin1.GetString(byteList.ToArray());
-    }
+            return Encoding.Latin1.GetString(byteList.ToArray());
+        }
 
-    internal static string ReadPaddedString(this BinaryReader reader, int length)
-    {
-        var str = reader.ReadString(length);
+        public static string ReadPaddedString(this BinaryReader reader, int length)
+        {
+            var str = reader.ReadString(length);
 
-        return str.Replace("\0", "");
-    }
+            return str.Replace("\0", "");
+        }
 
-    internal static void SkipRequiredByte(this BinaryReader reader, byte value)
-    {
-        var peekedValue = reader.PeekByte();
+        public static void SkipRequiredByte(this BinaryReader reader, byte value)
+        {
+            var peekedValue = reader.PeekByte();
 
-        if (peekedValue != value) throw new InvalidDataException($"Expected byte {value} but got {peekedValue}.");
+            if (peekedValue != value) throw new InvalidDataException($"Expected byte {value} but got {peekedValue}.");
 
-        reader.ReadByte();
-    }
+            reader.ReadByte();
+        }
 
     internal static void SkipRequiredBytes(this BinaryReader reader, params byte[] values)
     {
         foreach (var value in values) reader.SkipRequiredByte(value);
     }
 
-    internal static uint[] ReadPaddedUInt32Array(this BinaryReader reader, int readCount, int padCount)
-    {
-        var result = new uint[readCount > padCount ? readCount : padCount];
-
-        for (var i = 0; i < readCount; i++) result[i] = reader.ReadUInt32();
-
-        return result;
-    }
-
-    internal static void Skip(this BinaryReader reader, int count)
-    {
-        reader.BaseStream.Seek(count, SeekOrigin.Current);
-    }
-
-    internal static void SkipUntilInclusive(this BinaryReader reader, byte value)
-    {
-        try
+        public static uint[] ReadPaddedUInt32Array(this BinaryReader reader, int readCount, int padCount)
         {
-            var currentByte = reader.ReadByte();
-            while (currentByte != value) currentByte = reader.ReadByte();
+            var result = new uint[padCount];
+
+            for (var i = 0; i < padCount; i++) result[i] = reader.ReadUInt32();
+
+            return result;
         }
-        catch (EndOfStreamException)
+
+        public static void Skip(this BinaryReader reader, int count)
         {
-            throw new InvalidOperationException($"The value {value} was not found in the stream.");
+            reader.BaseStream.Seek(count, SeekOrigin.Current);
         }
-    }
 
-    internal static void SkipNonLatin1(this BinaryReader reader)
-    {
-        while (true)
+        public static void SkipUntilInclusive(this BinaryReader reader, byte value)
         {
-            var value = reader.ReadByte();
-
-            if (value is (< 0x20 or >= 0x7F) and < 0xA0) continue;
-
-            reader.BaseStream.Seek(-1, SeekOrigin.Current);
-            break;
+            try
+            {
+                var currentByte = reader.ReadByte();
+                while (currentByte != value) currentByte = reader.ReadByte();
+            }
+            catch (EndOfStreamException)
+            {
+                throw new InvalidOperationException($"The value {value} was not found in the stream.");
+            }
         }
-    }
 
-    internal static T[] ReadUntilException<T>(this BinaryReader br, Func<BinaryReader, T> readFunc,
+        public static void SkipNonLatin1(this BinaryReader reader)
+        {
+            while (true)
+            {
+                var value = reader.ReadByte();
+
+                if ((value < 0x20 || value >= 0x7F) && value < 0xA0) continue;
+
+                reader.BaseStream.Seek(-1, SeekOrigin.Current);
+                break;
+            }
+        }
+
+        public static T[] ReadUntilException<T>(this BinaryReader br, Func<BinaryReader, T> readFunc,
         params Type[] exceptionTypes)
     {
         var list = new List<T>();
@@ -127,8 +137,8 @@ internal static class BinaryReaderExtensions
                 break;
             }
 
-        return list.ToArray();
-    }
+            return list.ToArray();
+        }
 
     internal static T[] ReadArray<T>(this BinaryReader br, Func<BinaryReader, T> readFunc, IConvertible? size)
     {
