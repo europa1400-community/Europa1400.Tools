@@ -107,6 +107,9 @@
                                     </StackPanel>
                                 </StackPanel>
                             <Grid Background="{StaticResource SurfaceBrush}">
+                                <Rectangle x:Name="PreviewRenderPulse" Width="1" Height="1"
+                                           HorizontalAlignment="Left" VerticalAlignment="Top"
+                                           Fill="Transparent" IsHitTestVisible="False" Opacity="0"/>
                                 <Image x:Name="PreviewImage" Stretch="Uniform" Visibility="Collapsed"/>
                                 <MediaElement x:Name="PreviewMedia" LoadedBehavior="Manual" UnloadedBehavior="Stop"
                                               Visibility="Collapsed"/>

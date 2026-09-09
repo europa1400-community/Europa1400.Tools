@@ -2,23 +2,79 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "install-dev-tools",
+            "type": "shell",
+            "command": "powershell.exe",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${workspaceFolder}/scripts/install-dev-tools.ps1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "ensure-env",
+            "type": "shell",
+            "command": "powershell.exe",
+            "args": [
+                "-STA",
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${workspaceFolder}/scripts/ensure-env.ps1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
             "label": "restore",
             "type": "shell",
-            "command": "dotnet",
+            "command": "powershell.exe",
             "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${workspaceFolder}/scripts/dotnet.ps1",
                 "restore",
                 "Europa1400.Tools.sln"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
             },
+            "dependsOn": [
+                "install-dev-tools",
+                "ensure-env"
+            ],
+            "dependsOrder": "sequence",
             "problemMatcher": []
         },
         {
             "label": "build",
             "type": "shell",
-            "command": "dotnet",
+            "command": "powershell.exe",
             "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${workspaceFolder}/scripts/dotnet.ps1",
                 "build",
                 "Europa1400.Tools.sln",
                 "--no-restore"
@@ -36,8 +92,13 @@
         {
             "label": "test",
             "type": "shell",
-            "command": "dotnet",
+            "command": "powershell.exe",
             "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${workspaceFolder}/scripts/dotnet.ps1",
                 "test",
                 "Europa1400.Tools.sln",
                 "--no-build"
@@ -58,8 +119,13 @@
         {
             "label": "run verifier",
             "type": "shell",
-            "command": "dotnet",
+            "command": "powershell.exe",
             "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${workspaceFolder}/scripts/dotnet.ps1",
                 "run",
                 "--project",
                 "Europa1400.Tools.Verifier",

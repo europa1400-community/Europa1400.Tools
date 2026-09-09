@@ -113,9 +113,8 @@ internal sealed class GltfAnimationPreview
                     normals.Add(new Vector3D(normal.X, normal.Y, normal.Z));
                 }
             }
-            positions.Freeze();
             _geometry.Positions = positions;
-            if (normals != null) { normals.Freeze(); _geometry.Normals = normals; }
+            if (normals != null) _geometry.Normals = normals;
         }
     }
 }

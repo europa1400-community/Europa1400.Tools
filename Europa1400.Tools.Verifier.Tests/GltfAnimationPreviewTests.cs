@@ -49,6 +49,7 @@ public class GltfAnimationPreviewTests
                 Assert.Equal((.25f, .75f), preview.LoopRange(0));
                 var uvs = mesh.TextureCoordinates.ToArray();
                 preview.SetTime(0, .5f, false);
+                Assert.False(mesh.Positions.IsFrozen);
                 Assert.Equal(new Point3D(5, 0, 1), mesh.Positions[0]);
                 Assert.All(mesh.Normals, n => Assert.Equal(new Vector3D(0, 0, 1), n));
                 preview.SetTime(0, .5f, true);

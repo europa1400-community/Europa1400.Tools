@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using Europa1400.Tools.Animation;
 
@@ -13,7 +14,10 @@ public partial class MainWindow
     private bool _suppressAnimationChange;
     private bool _updatingTimeline;
     private GltfAnimationPreview? _animationPreview;
-    private readonly DispatcherTimer _animationTimer = new() { Interval = TimeSpan.FromMilliseconds(33) };
+    private readonly DispatcherTimer _animationTimer = new(DispatcherPriority.Render)
+    {
+        Interval = TimeSpan.FromMilliseconds(16)
+    };
     private readonly Stopwatch _animationClock = new();
     private double _animationTime;
     private double _lastAnimationTick;
@@ -74,6 +78,7 @@ public partial class MainWindow
         AnimationTimeline.Value = _animationTime;
         _updatingTimeline = false;
         AnimationTimeText.Text = $"{_animationTime:F2} / {duration:F2} s";
+        PreviewViewport.InvalidateVisual();
     }
 
     private void ToggleAnimation()
@@ -83,6 +88,7 @@ public partial class MainWindow
         if (_animationTime >= _animationPreview.Duration(0)) SetAnimationTime(0);
         _animationClock.Restart();
         _lastAnimationTick = 0;
+        SetPreviewRenderLoop(true);
         _animationTimer.Start();
         PlayButton.Content = "Pause";
     }
@@ -91,7 +97,25 @@ public partial class MainWindow
     {
         _animationTimer.Stop();
         _animationClock.Stop();
+        SetPreviewRenderLoop(false);
         PlayButton.Content = "Play";
+    }
+
+    private void SetPreviewRenderLoop(bool enabled)
+    {
+        if (enabled)
+        {
+            PreviewRenderPulse.BeginAnimation(UIElement.OpacityProperty, new DoubleAnimation(0, 0.02,
+                TimeSpan.FromMilliseconds(500))
+            {
+                AutoReverse = true,
+                RepeatBehavior = RepeatBehavior.Forever
+            });
+            return;
+        }
+
+        PreviewRenderPulse.BeginAnimation(UIElement.OpacityProperty, null);
+        PreviewRenderPulse.Opacity = 0;
     }
 
     private void AnimationTick(object? sender, EventArgs e)
