@@ -8,12 +8,12 @@ namespace Europa1400.Tools.Pipeline.Discoverer
     {
         public IEnumerable<DummyAsset> DiscoverAllFromGame(string gamePath)
         {
-            return Enumerable.Range(0, 100).Select(i => new DummyAsset());
+            return Enumerable.Range(0, 100).Select(i => new DummyAsset($"dummy/{i}.bin"));
         }
 
         public DummyAsset WrapSingleFile(string filePath)
         {
-            return new DummyAsset();
+            return new DummyAsset(filePath);
         }
     }
 }

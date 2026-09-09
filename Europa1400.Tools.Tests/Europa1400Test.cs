@@ -1,4 +1,4 @@
-﻿using Europa1400.Tools.Pipeline;
+using Europa1400.Tools.Pipeline;
 using Europa1400.Tools.Pipeline.Assets;
 using Europa1400.Tools.Pipeline.Converter;
 using Europa1400.Tools.Pipeline.Decoder;
@@ -113,6 +113,18 @@ public class Europa1400Test(ITestOutputHelper testOutputHelper)
         Assert.True(Directory.GetFiles(outputPath, "*.json", SearchOption.AllDirectories).Length > 0);
     }
 
+    [Fact]
+    public void TestBgfConverter()
+    {
+        var path = EnvVariables.GameDirectoryPath;
+        var bgfConverter = new BgfConverter
+        {
+            PathToGameFiles = path,
+            TargetDirectory = Directory.CreateTempSubdirectory("Bgf").FullName
+        };
+        bgfConverter.Convert();
+    }
+    
     [Fact]
     public async Task TestAll()
     {

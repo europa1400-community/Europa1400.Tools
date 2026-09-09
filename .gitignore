@@ -41,3 +41,6 @@ msbuild.wrn
 
 # Environment Variables
 .env
+
+# Pipeline / verifier cache
+cache/

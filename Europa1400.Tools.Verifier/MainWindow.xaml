@@ -1,0 +1,174 @@
+<Window x:Class="Europa1400.Tools.Verifier.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:helix="clr-namespace:HelixToolkit.Wpf;assembly=HelixToolkit.Wpf"
+        Title="Europa1400 Tools Verifier"
+        Width="1280" Height="800"
+        Background="{StaticResource BgBrush}"
+        Foreground="{StaticResource FgBrush}"
+        WindowStartupLocation="CenterScreen">
+    <DockPanel Background="{StaticResource BgBrush}">
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem>
+                <TextBlock x:Name="StatusText" Foreground="White" Text="Loading…"/>
+            </StatusBarItem>
+        </StatusBar>
+
+        <Grid Margin="8" Background="{StaticResource BgBrush}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="280"/>
+                <ColumnDefinition Width="8"/>
+                <ColumnDefinition Width="320"/>
+                <ColumnDefinition Width="8"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <DockPanel Grid.Column="0">
+                <TextBlock DockPanel.Dock="Top" Text="Categories" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                <ListBox x:Name="CategoryList" DisplayMemberPath="Label"
+                         SelectionChanged="CategoryList_OnSelectionChanged"/>
+            </DockPanel>
+
+            <GridSplitter Grid.Column="1" Width="8" HorizontalAlignment="Stretch"/>
+
+            <DockPanel Grid.Column="2">
+                <TextBlock DockPanel.Dock="Top" Text="Assets" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                <TextBox x:Name="SearchBox" DockPanel.Dock="Top" Margin="0,0,0,6"
+                         TextChanged="SearchBox_OnTextChanged"/>
+                <ListBox x:Name="AssetList" DisplayMemberPath="DisplayPath"
+                         SelectionChanged="AssetList_OnSelectionChanged"/>
+            </DockPanel>
+
+            <GridSplitter Grid.Column="3" Width="8" HorizontalAlignment="Stretch"/>
+
+            <DockPanel Grid.Column="4">
+                <TextBlock x:Name="AssetTitle" DockPanel.Dock="Top" FontWeight="SemiBold" TextWrapping="Wrap"
+                           Text="Select an asset"/>
+                <TextBlock x:Name="AssetMeta" DockPanel.Dock="Top" Foreground="{StaticResource MutedBrush}" Margin="0,2,0,8"
+                           TextWrapping="Wrap"/>
+                <DockPanel x:Name="ConverterPanel" DockPanel.Dock="Top" Margin="0,0,0,8">
+                    <TextBlock Text="Converter" VerticalAlignment="Center" Margin="0,0,8,0"
+                               Foreground="{StaticResource MutedBrush}"/>
+                    <ComboBox x:Name="ConverterCombo" MinWidth="220" HorizontalAlignment="Left"
+                              DisplayMemberPath="DisplayName"
+                              SelectionChanged="ConverterCombo_OnSelectionChanged"/>
+                </DockPanel>
+
+                <StackPanel x:Name="AnimationPanel" DockPanel.Dock="Top" Visibility="Collapsed" Margin="0,0,0,8">
+                    <TextBlock Text="Animation" Foreground="{StaticResource MutedBrush}" Margin="0,0,0,4"/>
+                    <ComboBox x:Name="AnimationCombo" DisplayMemberPath="Label"
+                              SelectionChanged="AnimationCombo_OnSelectionChanged"/>
+                </StackPanel>
+
+                <Grid>
+                    <TabControl>
+                    <TabItem Header="Preview">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="160"/>
+                                <RowDefinition Height="8"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <DockPanel Grid.Row="0">
+                                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,6,0,0">
+                                    <Button x:Name="PlayButton" Content="Play" Width="80" Click="PlayButton_OnClick" IsEnabled="False"/>
+                                    <Button Content="Stop" Width="80" Margin="8,0,0,0" Click="StopButton_OnClick"/>
+                                    <Button Content="Reconvert" Width="100" Margin="8,0,0,0" Click="ReconvertButton_OnClick"/>
+                                    <Button x:Name="ResetViewButton" Content="Reset view" Width="100" Margin="8,0,0,0"
+                                            Click="ResetViewButton_OnClick" IsEnabled="False"/>
+                                </StackPanel>
+                                <ListBox x:Name="ExportList" DisplayMemberPath="RelativePath"
+                                         SelectionChanged="ExportList_OnSelectionChanged"/>
+                            </DockPanel>
+
+                            <GridSplitter Grid.Row="1" Height="8" HorizontalAlignment="Stretch"/>
+
+                            <DockPanel Grid.Row="2">
+                                <StackPanel x:Name="AnimationPlaybackPanel" DockPanel.Dock="Top"
+                                            Visibility="Collapsed" Margin="0,0,0,8">
+                                    <DockPanel>
+                                        <TextBlock x:Name="AnimationTimeText" DockPanel.Dock="Right" Width="125"
+                                                   TextAlignment="Right" VerticalAlignment="Center"/>
+                                        <Slider x:Name="AnimationTimeline" Minimum="0" Maximum="1"
+                                                IsMoveToPointEnabled="True" ValueChanged="AnimationTimeline_OnValueChanged"/>
+                                    </DockPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                                        <CheckBox x:Name="LoopCheck" Content="Loop" IsChecked="True"
+                                                  VerticalAlignment="Center" Margin="0,0,16,0"/>
+                                        <CheckBox x:Name="InPlaceCheck" Content="In place" IsChecked="True"
+                                                  Checked="InPlace_OnChanged" Unchecked="InPlace_OnChanged"
+                                                  VerticalAlignment="Center" Margin="0,0,16,0"/>
+                                        <TextBlock Text="Speed" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <ComboBox x:Name="SpeedCombo" SelectedIndex="2" Width="70">
+                                            <ComboBoxItem Content="0.25×"/><ComboBoxItem Content="0.5×"/>
+                                            <ComboBoxItem Content="1×"/><ComboBoxItem Content="2×"/>
+                                        </ComboBox>
+                                    </StackPanel>
+                                </StackPanel>
+                            <Grid Background="{StaticResource SurfaceBrush}">
+                                <Rectangle x:Name="PreviewRenderPulse" Width="1" Height="1"
+                                           HorizontalAlignment="Left" VerticalAlignment="Top"
+                                           Fill="Transparent" IsHitTestVisible="False" Opacity="0"/>
+                                <Image x:Name="PreviewImage" Stretch="Uniform" Visibility="Collapsed"/>
+                                <MediaElement x:Name="PreviewMedia" LoadedBehavior="Manual" UnloadedBehavior="Stop"
+                                              Visibility="Collapsed"/>
+                                <TextBox x:Name="PreviewText" IsReadOnly="True" TextWrapping="NoWrap"
+                                         HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
+                                         FontFamily="Consolas" Visibility="Collapsed"/>
+                                <TextBlock x:Name="PreviewPlaceholder" Text="No export selected"
+                                           Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <helix:HelixViewport3D x:Name="PreviewViewport"
+                                                       Visibility="Collapsed"
+                                                       Background="#2D2D30"
+                                                       ShowViewCube="True"
+                                                       ShowCoordinateSystem="True"
+                                                       IsHeadLightEnabled="True"
+                                                       CameraRotationMode="Trackball"
+                                                       ModelUpDirection="0,1,0"
+                                                       TextBrush="#DCDCDC"
+                                                       ZoomExtentsWhenLoaded="False">
+                                    <helix:HelixViewport3D.Camera>
+                                        <PerspectiveCamera Position="3,1.5,-5" LookDirection="-3,-1.5,5"
+                                                           UpDirection="0,1,0" FieldOfView="45"/>
+                                    </helix:HelixViewport3D.Camera>
+                                    <helix:HelixViewport3D.DefaultCamera>
+                                        <PerspectiveCamera Position="3,1.5,-5" LookDirection="-3,-1.5,5"
+                                                           UpDirection="0,1,0" FieldOfView="45"/>
+                                    </helix:HelixViewport3D.DefaultCamera>
+                                    <helix:HelixViewport3D.RotateGesture>
+                                        <MouseGesture MouseAction="LeftClick"/>
+                                    </helix:HelixViewport3D.RotateGesture>
+                                    <helix:HelixViewport3D.PanGesture>
+                                        <MouseGesture MouseAction="RightClick"/>
+                                    </helix:HelixViewport3D.PanGesture>
+                                    <helix:DefaultLights/>
+                                    <ModelVisual3D x:Name="PreviewModel"/>
+                                </helix:HelixViewport3D>
+                                <TextBlock x:Name="PreviewHint" Visibility="Collapsed" IsHitTestVisible="False"
+                                           Margin="10" VerticalAlignment="Bottom" HorizontalAlignment="Left"
+                                           Foreground="{StaticResource MutedBrush}"
+                                           Text="Left-drag rotate · Wheel zoom · Right-drag pan · Reset view restores camera"/>
+                            </Grid>
+                            </DockPanel>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="Decoded JSON">
+                        <TextBox x:Name="JsonText" IsReadOnly="True" TextWrapping="NoWrap"
+                                 HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
+                                 FontFamily="Consolas" AcceptsReturn="True"/>
+                    </TabItem>
+                    </TabControl>
+                    <Border x:Name="LoadingOverlay" Background="#CC1E1E1E" Visibility="Collapsed">
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="360">
+                            <ProgressBar x:Name="PreviewProgress" Height="10" IsIndeterminate="True"/>
+                            <TextBlock x:Name="PreviewProgressText" Margin="0,12,0,0"
+                                       HorizontalAlignment="Center" TextWrapping="Wrap"
+                                       Text="Converting…" TextAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </DockPanel>
+        </Grid>
+    </DockPanel>
+</Window>

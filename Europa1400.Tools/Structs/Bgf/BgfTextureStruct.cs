@@ -10,6 +10,8 @@ namespace Europa1400.Tools.Structs.Bgf
         public string? NameAppendix { get; set; }
         public byte? Unknown1 { get; set; }
         public byte? Unknown2 { get; set; }
+        
+        internal bool HasTransparency => Unknown2 is not null && Unknown2 != 0;
 
         public static BgfTextureStruct FromBytes(BinaryReader br)
         {

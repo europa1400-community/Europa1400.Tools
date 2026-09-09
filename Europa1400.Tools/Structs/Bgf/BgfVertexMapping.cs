@@ -7,15 +7,22 @@ namespace Europa1400.Tools.Structs.Bgf
         public Vector3Struct Vertex1 { get; set; }
         public Vector3Struct Vertex2 { get; set; }
 
-        public Vector3Struct Vertex1Transformed => new Vector3Struct
-        {
-            X = Vertex1.X, Y = Vertex1.Y, Z = -Vertex1.Z
-        };
+        public Vector3Struct Vertex1Transformed => ToExport(Vertex1);
+        public Vector3Struct Vertex2Transformed => ToExport(Vertex2);
 
-        public Vector3Struct Vertex2Transformed => new Vector3Struct
+        /// <summary>
+        /// MappingObject vertices are already Y-up (+Y height, +X right).
+        /// Negate Z for the DirectX (left-handed) to glTF/OBJ (right-handed) convention.
+        /// </summary>
+        public static Vector3Struct ToExport(Vector3Struct v)
         {
-            X = Vertex2.X, Y = Vertex2.Y, Z = -Vertex2.Z
-        };
+            return new Vector3Struct
+            {
+                X = v.X,
+                Y = v.Y,
+                Z = -v.Z
+            };
+        }
 
         public static BgfVertexMapping FromBytes(BinaryReader br)
         {
