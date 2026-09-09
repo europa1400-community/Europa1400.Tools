@@ -7,14 +7,12 @@ namespace Europa1400.Tools.Structs.Bgf
     {
         public BgfTextureNameStruct[] TextureNames { get; set; }
 
-        public static BgfFooterStruct FromBytes(BinaryReader br)
+        public static BgfFooterStruct FromBytes(BinaryReader br, uint textureCount)
         {
-            var textureNames = br.ReadUntilException(BgfTextureNameStruct.FromBytes, typeof(InvalidDataException),
-                typeof(EndOfStreamException));
-
+            // The runtime texture table is followed by attachment data, not more names.
             return new BgfFooterStruct
             {
-                TextureNames = textureNames
+                TextureNames = br.ReadArray(BgfTextureNameStruct.FromBytes, textureCount)
             };
         }
     }

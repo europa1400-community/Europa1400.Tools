@@ -1,22 +1,15 @@
-using System;
-using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Europa1400.Tools.Converter;
+using Europa1400.Tools.Structs.Baf;
 using Europa1400.Tools.Pipeline;
 using Europa1400.Tools.Pipeline.Converter;
-using Europa1400.Tools.Pipeline.Output;
-using Europa1400.Tools.Structs;
-using Europa1400.Tools.Structs.Bgf;
 using Europa1400.Tools.Structs.Sbf;
-using Xunit;
 
 namespace Europa1400.Tools.Tests
 {
     public class ConverterTests
     {
+        private static readonly int[] ExpectedBafIniKeys = [1, 2, 3];
+
         [Fact]
         public async Task SbfRawConverter_OutputsCorrectExtensions_ForWav()
         {
@@ -49,13 +42,16 @@ namespace Europa1400.Tools.Tests
             var tempFile = Path.GetTempFileName();
             try
             {
-                File.WriteAllText(tempFile, "key=value", Encoding.Latin1);
+                File.WriteAllText(tempFile, "NumKeys=3\nKeys=1,2,3\nLoopIn=0\nLoopOut=10\n", Encoding.Latin1);
                 var asset = new Pipeline.Assets.BafIniAsset(tempFile, "test.bafini");
                 var decoder = new Pipeline.Decoder.BafIniDecoder();
                 var result = await decoder.DecodeAsync(asset);
 
-                Assert.IsType<string>(result);
-                Assert.Equal("key=value", result);
+                var settings = Assert.IsType<BafIniSettings>(result);
+                Assert.Equal(3, settings.NumKeys);
+                Assert.Equal(ExpectedBafIniKeys, settings.Keys);
+                Assert.Equal(0, settings.LoopIn);
+                Assert.Equal(10, settings.LoopOut);
             }
             finally
             {

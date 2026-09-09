@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Europa1400.Tools.Pipeline;
 using Europa1400.Tools.Pipeline.Assets;
 using Europa1400.Tools.Pipeline.Decoder;
+using Europa1400.Tools.Structs;
 using Xunit;
 
 namespace Europa1400.Tools.Tests
@@ -49,7 +50,7 @@ namespace Europa1400.Tools.Tests
             var bytes = ExtractBafFile("_ADDON/AO_WIMPEL_ZIRKUSZELT.baf");
             using var ms = new MemoryStream(bytes);
             using var br = new BinaryReader(ms);
-            var baf = Tools.Decoder.Baf.BafStruct.FromBytes(br);
+            var baf = Tools.Structs.Baf.BafStruct.FromBytes(br);
 
             Assert.Equal("BGF", baf.Magic);
             Assert.Equal(8u, baf.BoneCount);
@@ -63,7 +64,7 @@ namespace Europa1400.Tools.Tests
             var bytes = ExtractBafFile("BAUM/faellen_BUCHE_01.baf");
             using var ms = new MemoryStream(bytes);
             using var br = new BinaryReader(ms);
-            var baf = Tools.Decoder.Baf.BafStruct.FromBytes(br);
+            var baf = Tools.Structs.Baf.BafStruct.FromBytes(br);
 
             Assert.Equal("BGF", baf.Magic);
             Assert.Equal(4u, baf.BoneCount);
@@ -90,7 +91,7 @@ namespace Europa1400.Tools.Tests
 
                 var asset = new OgrAsset(tempFile, "test.ogr");
                 var result = await new OgrDecoder().DecodeAsync(asset);
-                var ogr = Assert.IsType<Tools.Decoder.Ogr.OgrStruct>(result);
+                var ogr = Assert.IsType<Tools.Structs.Ogr.OgrStruct>(result);
                 Assert.Equal("test_object", ogr.Name);
                 Assert.NotEmpty(ogr.RawData);
             }
@@ -121,7 +122,7 @@ namespace Europa1400.Tools.Tests
 
                 var asset = new Ed3Asset(tempFile, "test.ed3");
                 var result = await new Ed3Decoder().DecodeAsync(asset);
-                var ed3 = Assert.IsType<Tools.Decoder.Ed3.Ed3Struct>(result);
+                var ed3 = Assert.IsType<Tools.Structs.Ed3.Ed3Struct>(result);
                 Assert.Equal(0xAF, ed3.Type);
                 Assert.NotNull(ed3.MainCameraElement);
                 Assert.Equal("MegaCam", ed3.MainCameraElement.Name);
@@ -166,7 +167,7 @@ namespace Europa1400.Tools.Tests
 
                 var asset = new ResAsset(tempFile, "test.res");
                 var result = await new ResDecoder().DecodeAsync(asset);
-                var res = Assert.IsType<Tools.Decoder.Res.ResStruct>(result);
+                var res = Assert.IsType<Tools.Structs.Res.ResStruct>(result);
                 Assert.Equal(3u, res.EntryCount);
                 Assert.Equal(3, res.NameStrings.Count);
                 Assert.Equal(3, res.ValueStrings.Count);
@@ -208,7 +209,7 @@ namespace Europa1400.Tools.Tests
 
                 var asset = new ScrAsset(tempFile, "test.scr");
                 var result = await new ScrDecoder().DecodeAsync(asset);
-                var scr = Assert.IsType<Tools.Decoder.Scr.ScrStruct>(result);
+                var scr = Assert.IsType<Tools.Structs.Scr.ScrStruct>(result);
                 Assert.Equal(3, scr.Triplets.Count);
                 Assert.Equal(0x20, scr.Triplets[0].X);
                 Assert.Equal(0x10, scr.Triplets[0].Y);
@@ -234,7 +235,7 @@ namespace Europa1400.Tools.Tests
 
                 var asset = new SavAsset(tempFile, "test.sav");
                 var result = await new SavDecoder().DecodeAsync(asset);
-                var sav = Assert.IsType<Tools.Decoder.Sav.SavStruct>(result);
+                var sav = Assert.IsType<Tools.Structs.Sav.SavStruct>(result);
                 Assert.True(sav.CompressedSize > 0);
                 Assert.Equal(5, sav.DecompressedSize);
                 Assert.Equal("Hello", System.Text.Encoding.ASCII.GetString(sav.DecompressedData));
@@ -247,7 +248,7 @@ namespace Europa1400.Tools.Tests
         [Fact]
         public async Task ResConverter_OutputsJson()
         {
-            var res = new Tools.Decoder.Res.ResStruct
+            var res = new Tools.Structs.Res.ResStruct
             {
                 EntryCount = 2,
                 Section1Offset = 48,
@@ -270,7 +271,7 @@ namespace Europa1400.Tools.Tests
         [Fact]
         public async Task ScrConverter_OutputsJson()
         {
-            var scr = new Tools.Decoder.Scr.ScrStruct
+            var scr = new Tools.Structs.Scr.ScrStruct
             {
                 RawData = new byte[] { 0x20, 0x10, 0x00, 0x18, 0x0C, 0x00 },
                 Triplets = new List<(byte X, byte Y, byte Z)>
@@ -293,7 +294,7 @@ namespace Europa1400.Tools.Tests
         [Fact]
         public async Task SavConverter_OutputsBytes()
         {
-            var sav = new Tools.Decoder.Sav.SavStruct
+            var sav = new Tools.Structs.Sav.SavStruct
             {
                 CompressedSize = 100,
                 DecompressedSize = 5,
@@ -314,7 +315,7 @@ namespace Europa1400.Tools.Tests
         [Fact]
         public async Task OgrConverter_OutputsJson()
         {
-            var ogr = new Tools.Decoder.Ogr.OgrStruct
+            var ogr = new Tools.Structs.Ogr.OgrStruct
             {
                 Name = "test_obj",
                 RawData = new byte[] { 0x01, 0x02, 0x03 }
@@ -327,43 +328,43 @@ namespace Europa1400.Tools.Tests
             Assert.Equal("test_obj.json", list[0].FilePath);
             var json = System.Text.Encoding.UTF8.GetString(list[0].Content);
             Assert.Contains("test_obj", json);
-            Assert.Contains("RawDataBase64", json);
+            Assert.Contains("RawData", json);
         }
 
         [Fact]
         public async Task Ed3Converter_OutputsSceneJson()
         {
-            var ed3 = new Tools.Decoder.Ed3.Ed3Struct
+            var ed3 = new Tools.Structs.Ed3.Ed3Struct
             {
                 Type = 0xAF,
-                MainCameraElement = new Tools.Decoder.Ed3.MainCameraElement
+                MainCameraElement = new Tools.Structs.Ed3.MainCameraElement
                 {
                     Name = "MegaCam",
                     Values = new List<float>(new float[22]),
                     Num1 = 0
                 },
-                SceneElements = new List<Tools.Decoder.Ed3.SceneElement>
+                SceneElements = new List<Tools.Structs.Ed3.SceneElement>
                 {
-                    new Tools.Decoder.Ed3.SceneElement
+                    new Tools.Structs.Ed3.SceneElement
                     {
                         OnesCount = 0,
                         Name = "test_element",
                         Width = 10,
                         Height = 5,
                         Type = 2,
-                        DummyElement = new Tools.Decoder.Ed3.DummyElement
+                        DummyElement = new Tools.Structs.Ed3.DummyElement
                         {
                             Flag1 = false,
-                            Transform = new Tools.Decoder.Ed3.Transform
+                            Transform = new Tools.Structs.Ed3.Transform
                             {
-                                Position = new Tools.Decoder.Ed3.Vector3 { X = 1, Y = 2, Z = 3 },
-                                Rotation = new Tools.Decoder.Ed3.Vector3 { X = 0, Y = 0, Z = 0 }
+                                Position = new Vector3Struct { X = 1, Y = 2, Z = 3 },
+                                Rotation = new Vector3Struct { X = 0, Y = 0, Z = 0 }
                             },
                             Flag2 = false,
-                            Transforms = new List<Tools.Decoder.Ed3.Transform>()
+                            Transforms = new List<Tools.Structs.Ed3.Transform>()
                         },
                         SkipLength = 0,
-                        ScriptElements = new List<Tools.Decoder.Ed3.ScriptElement>()
+                        ScriptElements = new List<Tools.Structs.Ed3.ScriptElement>()
                     }
                 }
             };
@@ -375,8 +376,8 @@ namespace Europa1400.Tools.Tests
             Assert.Equal("scene.json", list[0].FilePath);
             var json = System.Text.Encoding.UTF8.GetString(list[0].Content);
             Assert.Contains("test_element", json);
-            Assert.Contains("dummy_element", json);
-            Assert.Contains("scene_elements", json);
+            Assert.Contains("DummyElement", json);
+            Assert.Contains("SceneElements", json);
         }
     }
 }

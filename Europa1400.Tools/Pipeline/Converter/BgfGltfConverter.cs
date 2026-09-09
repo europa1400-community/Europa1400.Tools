@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Europa1400.Tools.Pipeline.Output;
-using BgfConverter = Europa1400.Tools.Converter.BgfConverter;
 
 namespace Europa1400.Tools.Pipeline.Converter
 {

@@ -26,7 +26,7 @@ namespace Europa1400.Tools.Tests
             var asset = new Ed3Asset(path, "Geburt.ed3");
             var decoder = new Ed3Decoder();
             var result = await decoder.DecodeAsync(asset);
-            var ed3 = Assert.IsType<Decoder.Ed3.Ed3Struct>(result);
+            var ed3 = Assert.IsType<Structs.Ed3.Ed3Struct>(result);
 
             Assert.NotNull(ed3.MainCameraElement);
             Assert.Equal("MegaCam", ed3.MainCameraElement.Name);
@@ -38,7 +38,7 @@ namespace Europa1400.Tools.Tests
             var list = files.ToList();
             Assert.Single(list);
             var json = Encoding.UTF8.GetString(list[0].Content);
-            Assert.Contains("scene_elements", json);
+            Assert.Contains("SceneElements", json);
             Assert.Contains(ed3.SceneElements[0].Name, json);
 
             File.WriteAllText(Path.Combine(Path.GetTempPath(), "Geburt_scene.json"), json);
@@ -55,7 +55,7 @@ namespace Europa1400.Tools.Tests
             var asset = new Ed3Asset(path, "stadt_NUERNBERG_0.ed3");
             var decoder = new Ed3Decoder();
             var result = await decoder.DecodeAsync(asset);
-            var ed3 = Assert.IsType<Decoder.Ed3.Ed3Struct>(result);
+            var ed3 = Assert.IsType<Structs.Ed3.Ed3Struct>(result);
 
             Assert.NotNull(ed3.MainCameraElement);
             Assert.NotEmpty(ed3.SceneElements);
@@ -68,7 +68,7 @@ namespace Europa1400.Tools.Tests
             var files = await converter.ConvertAsync(ed3, progress, null);
             var list = files.ToList();
             var json = Encoding.UTF8.GetString(list[0].Content);
-            Assert.Contains("city_element", json);
+            Assert.Contains("CityElement", json);
 
             File.WriteAllText(Path.Combine(Path.GetTempPath(), "stadt_NUERNBERG_scene.json"), json);
         }

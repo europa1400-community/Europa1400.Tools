@@ -29,6 +29,19 @@ public static class BinaryReaderExtensions
         return value;
     }
 
+    public static int SkipWhile(this BinaryReader reader, byte value)
+    {
+        var count = 0;
+
+        while (reader.BaseStream.Position < reader.BaseStream.Length && reader.PeekByte() == value)
+        {
+            reader.ReadByte();
+            count++;
+        }
+
+        return count;
+    }
+
     public static bool SkipOptionalByte(this BinaryReader reader, byte value)
     {
         var peekedValue = reader.PeekByte();
@@ -170,6 +183,18 @@ public static class BinaryReaderExtensions
         var array = new int[count];
 
         for (var i = 0; i < count; i++) array[i] = br.ReadInt32();
+
+        return array;
+    }
+
+    internal static float[] ReadSingles(this BinaryReader br, IConvertible? size)
+    {
+        if (size is null) return [];
+
+        var count = Convert.ToInt32(size);
+        var array = new float[count];
+
+        for (var i = 0; i < count; i++) array[i] = br.ReadSingle();
 
         return array;
     }

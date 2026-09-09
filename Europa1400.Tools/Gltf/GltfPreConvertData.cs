@@ -1,5 +1,4 @@
 using System.Linq;
-using Europa1400.Tools.Decoder.Bgf;
 using Europa1400.Tools.Structs.Bgf;
 
 namespace Europa1400.Tools.Gltf;
@@ -14,24 +13,33 @@ internal class GltfPreConvertData
 
     internal static GltfPreConvertData FromBgf(BgfStruct bgf)
     {
-        var faces = bgf.MappingObject.PolygonMappings
-            .Select(e => new[] { e.Face.A, e.Face.B, e.Face.C })
+        var visualFaces = BgfVisualGeometry.GetFaces(bgf);
+        var faces = visualFaces
+            .Select(e => new[] { e.A, e.B, e.C })
             .ToArray();
-        var textureIndices = bgf.MappingObject.PolygonMappings
-            .Select(e => e.TextureIndex)
+        var textureIndices = visualFaces
+            .Select(e => (byte)e.TextureIndex)
             .ToArray();
         var vertices = bgf.MappingObject.VertexMappings
-            .Select(e => new[] { e.Vertex1.X, e.Vertex1.Y, -e.Vertex1.Z })
+            .Select(e =>
+            {
+                var p = BgfVertexMapping.ToExport(e.Vertex1);
+                return new[] { p.X, p.Y, p.Z };
+            })
             .ToArray();
         var normals = bgf.MappingObject.VertexMappings
-            .Select(e => new[] { e.Vertex2.X, e.Vertex2.Y, -e.Vertex2.Z })
+            .Select(e =>
+            {
+                var n = BgfVertexMapping.ToExport(e.Vertex2);
+                return new[] { n.X, n.Y, n.Z };
+            })
             .ToArray();
-        var texCoords = bgf.MappingObject.PolygonMappings
+        var texCoords = visualFaces
             .Select(e => new[]
             {
-                new[] { e.TextureMapping.TextureCoordinates1.U, e.TextureMapping.TextureCoordinates1.V },
-                new[] { e.TextureMapping.TextureCoordinates2.U, e.TextureMapping.TextureCoordinates2.V },
-                new[] { e.TextureMapping.TextureCoordinates3.U, e.TextureMapping.TextureCoordinates3.V }
+                new[] { e.Uv1.X, e.Uv1.Y },
+                new[] { e.Uv2.X, e.Uv2.Y },
+                new[] { e.Uv3.X, e.Uv3.Y }
             })
             .ToArray();
 
